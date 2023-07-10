@@ -1,48 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_one/listview_item.dart';
+import 'package:flutter_one/product_detail.dart';
+import 'package:flutter_one/product_item.dart';
+import 'package:flutter_one/product.dart';
 
 void main() => runApp(HomePage());
 
 class HomePage extends StatelessWidget {
-  final List _items = [
-    'RedBull Acai',
-    'RedBull BeachBreeze',
-    'RedBull Cactus',
-    'RedBull Classic',
-    'RedBull Coconut',
-    'RedBull Grapefruit',
-    'RedBull Kiwi&Apple',
-    'RedBull No Sugar',
-    'RedBull Kratingdaeng',
-    'RedBull Tangerine',
-    'RedBull Watermalon'
+
+  final List<Product> _products = [
+    Product(name: 'RedBull Acai', price: '10', imageUrl: 'assets/images/acai.png', description: 'Энергетик с Асаи. В России не продается.'),
+    Product(name: 'RedBull BeachBreeze', price: '20', imageUrl: 'assets/images/beachbreeze.png', description: 'Энергетик со вкусом бриза на пляже. В России не продается.'),
+    Product(name: 'RedBull Cactus', price: '30', imageUrl: 'assets/images/cactus.png', description: 'Энергетик со вкусом кактуса. В России не продается.'),
+    Product(name: 'RedBull Classic', price: '40', imageUrl: 'assets/images/classic.png', description: 'Энергетик RedBull классический. Есть в России и по всему миру.'),
+    Product(name: 'RedBull Coconut', price: '50', imageUrl: 'assets/images/coconut.png', description: 'Энергетик со вкусом кокоса и ягод. Есть по всему миру. Просто прекрасен.'),
+    Product(name: 'RedBull Grapefruit', price: '60', imageUrl: 'assets/images/grapefruit.png', description: 'Энергетик со вкусом грейпфрута. В России не продается.'),
+    Product(name: 'RedBull Kiwi&Apple', price: '70', imageUrl: 'assets/images/kiwiapple.png', description: 'Энергетик со вкусом киви и яблока. В России не продается.'),
+    Product(name: 'RedBull No Sugar', price: '80', imageUrl: 'assets/images/nosugar.png', description: 'Энергетик RedBull без сахара. Есть в России и по всему миру.'),
+    Product(name: 'RedBull Kratingdaeng', price: '90', imageUrl: 'assets/images/small.png', description: 'Энергетик странный и маленький. В России не продается.'),
+    Product(name: 'RedBull Tangerine', price: '100', imageUrl: 'assets/images/tangerine.png', description: 'Энергетик с тангарином. В России не продается.'),
+    Product(name: 'RedBull Watermalon', price: '110', imageUrl: 'assets/images/watermelon.png', description: 'Энергетик со вкусом арбуза. Есть в России и по всему миру.'),
   ];
-  final List<String> _imgList = [
-    'assets/images/acai.png',
-    'assets/images/beachbreeze.png',
-    'assets/images/cactus.png',
-    'assets/images/classic.png',
-    'assets/images/coconut.png',
-    'assets/images/grapefruit.png',
-    'assets/images/kiwiapple.png',
-    'assets/images/nosugar.png',
-    'assets/images/small.png',
-    'assets/images/tangerine.png',
-    'assets/images/watermelon.png',
-  ];
-  final List _price = [
-    '10',
-    '20',
-    '30',
-    '40',
-    '50',
-    '60',
-    '70',
-    '80',
-    '90',
-    '100',
-    '110'
-  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +40,13 @@ class HomePage extends StatelessWidget {
           ),
         ),
         body: ListView.builder(
-          itemCount: _items.length,
+          itemCount: _products.length,
           itemBuilder: (context, index) {
-            return MyListItem(
-              name: _items[index],
-              price: _price[index],
-              imageUrl: _imgList[index],
+            return ProductItem(
+                product: _products[index],
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetail(product: _products[index]),));
+                },
             );
           },
         ),
