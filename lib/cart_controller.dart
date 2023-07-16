@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:get/get.dart';
 import 'package:flutter_one/product.dart';
 
@@ -23,5 +25,18 @@ class CartController extends GetxController {
       _products[product] = _products[product]! - 1;
     }
   }
+
+  void updateList() {
+    _products.refresh();
+  }
+
+  String deleteProduct(Product product) {
+      _products.removeWhere((key, value) => key == product);
+      return '0';
+  }
+
+
+  get total => _products.isEmpty ? 0 : _products.entries.map((product) => product.key.price * product.value).toList()
+      .reduce((value, element) => value + element);
 
 }
