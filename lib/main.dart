@@ -5,11 +5,19 @@ import 'package:flutter_one/product.dart';
 import 'package:flutter_one/shopping_cart.dart';
 import 'package:flutter_one/cart_controller.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
 
 
 
-void main() => runApp(GetMaterialApp(home: HomePage()));
+//void main() => runApp(GetMaterialApp(home: HomePage()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Get.putAsync(() => SharedPreferences.getInstance());
+  runApp(GetMaterialApp(
+    home: HomePage(),
+  ));
+}
 
 class HomePage extends StatelessWidget {
   final List<Product> _products = [
@@ -38,6 +46,15 @@ class HomePage extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: SizedBox(
+              width: 30,
+              child: DropdownWidget(),
+            ),
+
+          ),
+          leadingWidth: 100,
           actions: [
             SizedBox(
               width: 45,
@@ -59,15 +76,20 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 10,)
+            SizedBox(width: 10,),
           ],
           backgroundColor: Color(0xFF6e7582),
           centerTitle: true,
           title: Text(
             'Мое сердце остановилось',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15, // Установите желаемый размер текста здесь
+              fontWeight: FontWeight.bold, // Установите желаемый начертание текста здесь
+            ),
           ),
         ),
+
         body: ListView.builder(
           itemCount: _products.length,
           itemBuilder: (context, index) {
@@ -89,6 +111,46 @@ class HomePage extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  void sortByName (List <Product> _products) {
+    return _products.sort((a, b) => a.name.compareTo(b.name));
+  }
+}
+
+class DropdownWidget extends StatefulWidget {
+  @override
+  _DropdownWidgetState createState() => _DropdownWidgetState();
+}
+
+class _DropdownWidgetState extends State<DropdownWidget> {
+  String dropdownvalue = 'Цена ↑';
+
+  var items = [
+    'Цена ↑',
+    'Цена ↓',
+    'Имя ↑',
+    'Имя ↓',
+  ];
+
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton(
+      value: dropdownvalue,
+      icon: const Icon(Icons.keyboard_arrow_down),
+      items: items.map((String items) {
+        return DropdownMenuItem(
+          value: items,
+          child: Text(items),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        setState(() {
+          dropdownvalue = newValue!;
+        });
+      },
     );
   }
 }

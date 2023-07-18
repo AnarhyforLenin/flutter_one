@@ -35,6 +35,7 @@ class _ProductItemState extends State<ProductItem> {
   Widget build(BuildContext context) {
     final double price = widget.product.price;
 
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -97,17 +98,13 @@ class _ProductItemState extends State<ProductItem> {
                             IconButton(
                               onPressed: () {
                                 setState(() {
-                                  if (widget.cartController.products[widget.product] == null || widget.cartController.products[widget.product] == 0) {
-                                    widget.addedToCart = false;
-                                    showBuyButton = true;
-                                  } else {
                                     widget.cartController
                                         .removeProduct(widget.product);
                                     if (widget.cartController.products[widget.product] == 0 || widget.cartController.products[widget.product] == null) {
                                       widget.addedToCart = false;
                                       showBuyButton = true;
+                                      print(showBuyButton);
                                     }
-                                  }
                                 });
                               },
                               icon: Icon(Icons.remove_circle),
@@ -115,7 +112,7 @@ class _ProductItemState extends State<ProductItem> {
                             ),
                             Obx(() => Text('${widget.cartController.products[widget.product] ?? 0}',
                               style: TextStyle(fontSize: 15),
-                            )),
+                            ),),
                             IconButton(
                               onPressed: () {
                                 setState(() {
@@ -130,7 +127,8 @@ class _ProductItemState extends State<ProductItem> {
                         ),
                       )
                           : showBuyButton
-                          ? Container(
+                          ?
+                      Container(
                         margin: EdgeInsets.only(right: 10),
                         child: Column(
                           children: [
@@ -142,6 +140,7 @@ class _ProductItemState extends State<ProductItem> {
                                 setState(() {
                                   widget.addedToCart = true;
                                   showBuyButton = false;
+                                  print(showBuyButton);
                                 });
                                 Get.snackbar(
                                   "Товар добавлен",

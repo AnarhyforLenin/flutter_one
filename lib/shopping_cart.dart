@@ -3,8 +3,24 @@ import 'package:flutter_one/product_item.dart';
 import 'package:flutter_one/cart_controller.dart';
 import 'package:get/get.dart';
 
-class ShoppingCart extends StatelessWidget {
+
+class ShoppingCart extends StatefulWidget {
+  @override
+  _ShoppingCartState createState() => _ShoppingCartState();
+}
+
+class _ShoppingCartState extends State<ShoppingCart> {
   final CartController cartController = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      await cartController.saveCartToSharedPreferences();
+      cartController.updateList();
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
