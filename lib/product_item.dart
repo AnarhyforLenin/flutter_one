@@ -33,7 +33,7 @@ class _ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
-    final double price = widget.product.price;
+    final int price = widget.product.price;
 
 
     return Padding(

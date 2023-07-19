@@ -9,7 +9,7 @@ class ProductDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double price = product.price;
+    final int price = product.price;
 
     return Scaffold(
       appBar: AppBar(
