@@ -12,6 +12,7 @@ import 'dart:math' as math;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Get.putAsync(() => SharedPreferences.getInstance());
+
   runApp(GetMaterialApp(
     home: HomePage(),
   ));
@@ -42,10 +43,30 @@ class _HomePageState extends State<HomePage> {
 
   final CartController cartController = Get.put(CartController());
 
+  Future<int> loadState () async {
+    final prefs = await SharedPreferences.getInstance();
+    final int state = prefs.getInt('firstValue') ?? 0;
+    return state;
+  }
+
   @override
   void initState() {
-    sortByName(false);
     super.initState();
+    loadAndSortProducts();
+  }
+
+  Future<void> loadAndSortProducts() async {
+    int state = await loadState();
+
+    if (state == 0) {
+      sortByName(false);
+    } else if (state == 1) {
+      sortByName(true);
+    } else if (state == 2) {
+      sortByPrice(false);
+    } else if (state == 3) {
+      sortByPrice(true);
+    }
   }
 
   void sortByName(bool descendingNameUp) {
@@ -90,7 +111,6 @@ class _HomePageState extends State<HomePage> {
                 child: DropdownWidget(
                   sortCallback: (descending) {
                     if (nameSort) {
-                      print(nameSort);
                       sortByName(descending);
                     } else {
                       sortByPrice(descending);
@@ -168,6 +188,7 @@ class _HomePageState extends State<HomePage> {
 class DropdownWidget extends StatefulWidget {
   final Function(bool) sortCallback;
 
+
   DropdownWidget({required this.sortCallback});
 
   @override
@@ -175,7 +196,8 @@ class DropdownWidget extends StatefulWidget {
 }
 
 class _DropdownWidgetState extends State<DropdownWidget> {
-  String dropdownValue = 'Имя ↑';
+  int dropdownValueIndex = 0;
+  late String dropdownValue;
 
   final List<String> items = [
     'Имя ↑',
@@ -184,15 +206,43 @@ class _DropdownWidgetState extends State<DropdownWidget> {
     'Цена ↓',
   ];
 
+  _DropdownWidgetState() {
+    dropdownValue = items[dropdownValueIndex];
+  }
+
   bool get isDescendingByName => dropdownValue.startsWith('Имя');
   bool get isDescendingByPrice => dropdownValue.startsWith('Цена');
+
+  @override
+  void initState() {
+    super.initState();
+    loadState().then((value) {
+      setState(() {
+        dropdownValueIndex = value;
+        dropdownValue = items[dropdownValueIndex];
+      });
+    });
+  }
+
+  void saveState () async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('firstValue', dropdownValueIndex);
+  }
+
+  Future<int> loadState () async {
+    final prefs = await SharedPreferences.getInstance();
+    final int state = prefs.getInt('firstValue') ?? 0;
+    return state;
+  }
 
   @override
   Widget build(BuildContext context) {
     return DropdownButton(
       value: dropdownValue,
       icon: const Icon(Icons.keyboard_arrow_down),
-      items: items.map((item) {
+      items: items.asMap().entries.map((entry) {
+        int index = entry.key;
+        String item = entry.value;
         return DropdownMenuItem(
           value: item,
           child: Text(item),
@@ -201,6 +251,8 @@ class _DropdownWidgetState extends State<DropdownWidget> {
       onChanged: (String? newValue) {
         setState(() {
           dropdownValue = newValue!;
+          dropdownValueIndex = items.indexOf(dropdownValue);
+          saveState();
           if (isDescendingByName) {
             nameSort = true;
             widget.sortCallback(dropdownValue.startsWith('Имя ↓'));
@@ -213,3 +265,4 @@ class _DropdownWidgetState extends State<DropdownWidget> {
     );
   }
 }
+
