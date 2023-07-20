@@ -103,7 +103,6 @@ class _ProductItemState extends State<ProductItem> {
                                     if (widget.cartController.products[widget.product] == 0 || widget.cartController.products[widget.product] == null) {
                                       widget.addedToCart = false;
                                       showBuyButton = true;
-                                      print(showBuyButton);
                                     }
                                 });
                               },
@@ -140,7 +139,6 @@ class _ProductItemState extends State<ProductItem> {
                                 setState(() {
                                   widget.addedToCart = true;
                                   showBuyButton = false;
-                                  print(showBuyButton);
                                 });
                                 Get.snackbar(
                                   "Товар добавлен",

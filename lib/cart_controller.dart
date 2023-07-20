@@ -31,11 +31,10 @@ class CartController extends GetxController {
 
       for (String cartItem in cartList) {
         List<String> cartItemData = cartItem.split(':');
-        if (cartItemData.length == 2) {
-          String productName = cartItemData[0];
-          int quantity = int.tryParse(cartItemData[1]) ?? 0;
-          cartData[productName] = quantity;
-        }
+        String productName = cartItemData[0];
+        int quantity = int.tryParse(cartItemData[1]) ?? 0;
+        cartData[productName] = quantity;
+        print(cartData);
       }
     }
   }

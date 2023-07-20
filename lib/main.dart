@@ -86,9 +86,6 @@ class _HomePageState extends State<HomePage> {
       } else {
         _products.sort((a, b) => a.price.compareTo(b.price));
       }
-      for (var product in _products) {
-        print('${product.name}: ${product.price}');
-      }
     });
   }
 
