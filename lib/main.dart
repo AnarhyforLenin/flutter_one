@@ -11,7 +11,11 @@ import 'dart:math' as math;
 //void main() => runApp(GetMaterialApp(home: HomePage()));
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final cartController = Get.put(CartController());
+
   await Get.putAsync(() => SharedPreferences.getInstance());
+  await cartController.getCartFromSharedPreferences();
 
   runApp(GetMaterialApp(
     home: HomePage(),
@@ -25,21 +29,22 @@ class HomePage extends StatefulWidget {
 
 late bool nameSort;
 
+List<Product> Products = [
+  Product(name: 'RedBull BeachBreeze', imageUrl: 'assets/images/beachbreeze.png', price: 20, description: 'Энергетик со вкусом бриза на пляже. В России не продается.'),
+  Product(name: 'RedBull Acai', imageUrl: 'assets/images/acai.png', price: 10, description: 'Энергетик с Асаи. В России не продается.'),
+  Product(name: 'RedBull Cactus', imageUrl: 'assets/images/cactus.png', price: 999, description: 'Энергетик со вкусом кактуса. В России не продается.'),
+  Product(name: 'RedBull Classic', imageUrl: 'assets/images/classic.png', price: 40, description: 'Энергетик RedBull классический. Есть в России и по всему миру.'),
+  Product(name: 'RedBull Coconut', imageUrl: 'assets/images/coconut.png', price: 50, description: 'Энергетик со вкусом кокоса и ягод. Есть по всему миру. Просто прекрасен.'),
+  Product(name: 'RedBull Grapefruit', imageUrl: 'assets/images/grapefruit.png', price: 60, description: 'Энергетик со вкусом грейпфрута. В России не продается.'),
+  Product(name: 'RedBull Kiwi&Apple', imageUrl: 'assets/images/kiwiapple.png', price: 70, description: 'Энергетик со вкусом киви и яблока. В России не продается.'),
+  Product(name: 'RedBull No Sugar', imageUrl: 'assets/images/nosugar.png', price: 80, description: 'Энергетик RedBull без сахара. Есть в России и по всему миру.'),
+  Product(name: 'RedBull Kratingdaeng', imageUrl: 'assets/images/small.png', price: 90, description: 'Энергетик странный и маленький. В России не продается.'),
+  Product(name: 'RedBull Tangerine', imageUrl: 'assets/images/tangerine.png', price: 150, description: 'Энергетик с тангарином. В России не продается.'),
+  Product(name: 'RedBull Watermalon', imageUrl: 'assets/images/watermelon.png', price: 110, description: 'Энергетик со вкусом арбуза. Есть в России и по всему миру.'),
+];
 
 class _HomePageState extends State<HomePage> {
-  List<Product> _products = [
-    Product(name: 'RedBull BeachBreeze', imageUrl: 'assets/images/beachbreeze.png', price: 20, description: 'Энергетик со вкусом бриза на пляже. В России не продается.'),
-    Product(name: 'RedBull Acai', imageUrl: 'assets/images/acai.png', price: 10, description: 'Энергетик с Асаи. В России не продается.'),
-    Product(name: 'RedBull Cactus', imageUrl: 'assets/images/cactus.png', price: 999, description: 'Энергетик со вкусом кактуса. В России не продается.'),
-    Product(name: 'RedBull Classic', imageUrl: 'assets/images/classic.png', price: 40, description: 'Энергетик RedBull классический. Есть в России и по всему миру.'),
-    Product(name: 'RedBull Coconut', imageUrl: 'assets/images/coconut.png', price: 50, description: 'Энергетик со вкусом кокоса и ягод. Есть по всему миру. Просто прекрасен.'),
-    Product(name: 'RedBull Grapefruit', imageUrl: 'assets/images/grapefruit.png', price: 60, description: 'Энергетик со вкусом грейпфрута. В России не продается.'),
-    Product(name: 'RedBull Kiwi&Apple', imageUrl: 'assets/images/kiwiapple.png', price: 70, description: 'Энергетик со вкусом киви и яблока. В России не продается.'),
-    Product(name: 'RedBull No Sugar', imageUrl: 'assets/images/nosugar.png', price: 80, description: 'Энергетик RedBull без сахара. Есть в России и по всему миру.'),
-    Product(name: 'RedBull Kratingdaeng', imageUrl: 'assets/images/small.png', price: 90, description: 'Энергетик странный и маленький. В России не продается.'),
-    Product(name: 'RedBull Tangerine', imageUrl: 'assets/images/tangerine.png', price: 150, description: 'Энергетик с тангарином. В России не продается.'),
-    Product(name: 'RedBull Watermalon', imageUrl: 'assets/images/watermelon.png', price: 110, description: 'Энергетик со вкусом арбуза. Есть в России и по всему миру.'),
-  ];
+
 
   final CartController cartController = Get.put(CartController());
 
@@ -72,9 +77,9 @@ class _HomePageState extends State<HomePage> {
   void sortByName(bool descendingNameUp) {
     setState(() {
       if (descendingNameUp) {
-        _products.sort((a, b) => b.name.compareTo(a.name));
+        Products.sort((a, b) => b.name.compareTo(a.name));
       } else {
-        _products.sort((a, b) => a.name.compareTo(b.name));
+        Products.sort((a, b) => a.name.compareTo(b.name));
       }
     });
   }
@@ -82,9 +87,9 @@ class _HomePageState extends State<HomePage> {
   void sortByPrice(bool descendingPriceUp) {
     setState(() {
       if (descendingPriceUp) {
-        _products.sort((a, b) => b.price.compareTo(a.price));
+        Products.sort((a, b) => b.price.compareTo(a.price));
       } else {
-        _products.sort((a, b) => a.price.compareTo(b.price));
+        Products.sort((a, b) => a.price.compareTo(b.price));
       }
     });
   }
@@ -157,16 +162,16 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: ListView.builder(
-          itemCount: _products.length,
+          itemCount: Products.length,
           itemBuilder: (context, index) {
             return ProductItem(
-              product: _products[index],
+              product: Products[index],
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        ProductDetail(product: _products[index]),
+                        ProductDetail(product: Products[index]),
                   ),
                 );
               },

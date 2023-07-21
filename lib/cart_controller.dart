@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 import 'package:flutter_one/product.dart';
+import 'package:flutter_one/main.dart';
 
 class CartController extends GetxController {
   RxMap<Product, int> _products = <Product, int>{}.obs;
@@ -19,6 +20,7 @@ class CartController extends GetxController {
       String cartItem = '$productName:$quantity';
       cartList.add(cartItem);
     }
+    print(cartList);
     await prefs.setStringList('cart', cartList);
   }
 
@@ -32,11 +34,17 @@ class CartController extends GetxController {
       for (String cartItem in cartList) {
         List<String> cartItemData = cartItem.split(':');
         String productName = cartItemData[0];
+        Product? product = getProductByName(productName);
         int quantity = int.tryParse(cartItemData[1]) ?? 0;
-        cartData[productName] = quantity;
-        print(cartData);
+        for (int i = 0; i < quantity; i++) {
+          addProduct(product!);
+        }
       }
     }
+  }
+
+  Product? getProductByName(String name) {
+    return Products.firstWhere((product) => product.name == name);
   }
 
 

@@ -15,10 +15,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      await cartController.getCartFromSharedPreferences();
-      cartController.updateList();
-    });
+    // WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    //   await cartController.getCartFromSharedPreferences();
+    //   cartController.updateList();
+    // });
   }
 
 
@@ -51,41 +51,37 @@ class _ShoppingCartState extends State<ShoppingCart> {
                   ],
                 ),
                 child:
-                Obx(
-                      () {
-                    final products = cartController.products;
-                    if (products.isEmpty) {
-                      return Center(
-                        child: Text('Корзина пуста',
-                          style: TextStyle(fontSize: 20),),
-                      );
-                    }
-                    return
-                      ListView.builder(
-                        itemCount: products.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final product = products.keys.elementAt(index);
-                          return Dismissible(
-                            key: Key(product.name),
-                            onDismissed: (direction) {
-                              cartController.deleteProduct(product);
-                              cartController.updateList();
-                            },
-                            background: Container(color: Colors.red),
-                            child: ProductItem(
-                            product: product,
-                            onTap: () {},
-                            index: index,
-                            cartController: cartController,
-                            quantity: cartController.products[product]!,
-                            addedToCart: true,
-                          ),
-                          );
-
+                Obx(() {
+                  final products = cartController.products;
+                  if (products.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'Корзина пуста',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    );
+                  }
+                  return ListView(
+                    children: products.keys.map((product) {
+                      return Dismissible(
+                        key: Key(product.name),
+                        onDismissed: (direction) {
+                          cartController.deleteProduct(product);
+                          cartController.updateList();
                         },
+                        background: Container(color: Colors.red),
+                        child: ProductItem(
+                          product: product,
+                          onTap: () {},
+                          index: products.keys.toList().indexOf(product),
+                          cartController: cartController,
+                          quantity: products[product]!,
+                          addedToCart: true,
+                        ),
                       );
-                  },
-                ),
+                    }).toList(),
+                  );
+                }),
               ),
             ),
           ),
@@ -98,7 +94,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                   style: TextStyle(
                     fontSize: 25,
                   ),),
-                Obx(() => Text('${cartController.total}',
+                Obx(() => Text('${cartController.total}€',
                   style: TextStyle(
                     fontSize: 25,),)
                 ),
