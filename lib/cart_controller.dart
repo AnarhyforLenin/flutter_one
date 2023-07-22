@@ -20,7 +20,6 @@ class CartController extends GetxController {
       String cartItem = '$productName:$quantity';
       cartList.add(cartItem);
     }
-    print(cartList);
     await prefs.setStringList('cart', cartList);
   }
 

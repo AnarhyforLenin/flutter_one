@@ -15,10 +15,6 @@ class _ShoppingCartState extends State<ShoppingCart> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance!.addPostFrameCallback((_) async {
-    //   await cartController.getCartFromSharedPreferences();
-    //   cartController.updateList();
-    // });
   }
 
 

@@ -28,6 +28,8 @@ class HomePage extends StatefulWidget {
 }
 
 late bool nameSort;
+String searchString = "";
+
 
 List<Product> Products = [
   Product(name: 'RedBull BeachBreeze', imageUrl: 'assets/images/beachbreeze.png', price: 20, description: 'Энергетик со вкусом бриза на пляже. В России не продается.'),
@@ -161,27 +163,57 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        body: ListView.builder(
-          itemCount: Products.length,
-          itemBuilder: (context, index) {
-            return ProductItem(
-              product: Products[index],
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ProductDetail(product: Products[index]),
-                  ),
-                );
+        body: Column(children: [
+          Padding(
+            padding: const EdgeInsets.all(7),
+            child: Container (
+              height: 40,
+              child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  searchString = value.toLowerCase();
+                });
               },
-              index: index,
-              cartController: cartController,
-              quantity: 1,
-              addedToCart: false,
-            );
-          },
-        ),
+              decoration: InputDecoration(
+                hintText: searchString.isNotEmpty ? '' : 'Поиск',
+                hintStyle: TextStyle(color: Color(0xff444850)),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff444850)),
+                ),
+                suffixIcon: Icon(Icons.search, color: Color(0xff444850)),
+              ),
+                cursorColor: Color(0xff444850),
+            ),)
+
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: Products.length,
+              itemBuilder: (context, index) {
+                return Products[index].name.toLowerCase().contains(searchString) ?
+                  ProductItem(
+                  product: Products[index],
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetail(product: Products[index]),
+                      ),
+                    );
+                  },
+                  index: index,
+                  cartController: cartController,
+                  quantity: 1,
+                  addedToCart: false,
+                ) :
+                    Container();
+              },
+            ),
+          ),
+
+        ],),
+
       ),
     );
   }
