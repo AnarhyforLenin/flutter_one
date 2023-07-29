@@ -89,7 +89,7 @@ class _ProductItemState extends State<ProductItem> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      !(widget.cartController.products[widget.product] == null || widget.cartController.products[widget.product] == 0)
+                      !(widget.cartController.products[widget.product.id] == null || widget.cartController.products[widget.product.id] == 0)
                           ? Container(
                         width: 200,
                         height: 40,
@@ -98,9 +98,8 @@ class _ProductItemState extends State<ProductItem> {
                             IconButton(
                               onPressed: () {
                                 setState(() {
-                                    widget.cartController
-                                        .removeProduct(widget.product);
-                                    if (widget.cartController.products[widget.product] == 0 || widget.cartController.products[widget.product] == null) {
+                                    widget.cartController.removeProduct(widget.product.id);
+                                    if (widget.cartController.products[widget.product.id] == 0 || widget.cartController.products[widget.product.id] == null) {
                                       widget.addedToCart = false;
                                       showBuyButton = true;
                                     }
@@ -109,14 +108,13 @@ class _ProductItemState extends State<ProductItem> {
                               icon: Icon(Icons.remove_circle),
                               iconSize: 24,
                             ),
-                            Obx(() => Text('${widget.cartController.products[widget.product] ?? 0}',
+                            Obx(() => Text('${widget.cartController.products[widget.product.id] ?? 0}',
                               style: TextStyle(fontSize: 15),
                             ),),
                             IconButton(
                               onPressed: () {
                                 setState(() {
-                                  widget.cartController
-                                      .addProduct(widget.product);
+                                  widget.cartController.addProduct(widget.product.id);
                                 });
                               },
                               icon: Icon(Icons.add_circle),
@@ -134,8 +132,7 @@ class _ProductItemState extends State<ProductItem> {
                             SizedBox(height: 5),
                             ElevatedButton(
                               onPressed: () {
-                                widget.cartController
-                                    .addProduct(widget.product);
+                                widget.cartController.addProduct(widget.product.id);
                                 setState(() {
                                   widget.addedToCart = true;
                                   showBuyButton = false;

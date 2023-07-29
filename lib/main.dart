@@ -32,17 +32,17 @@ String searchString = "";
 
 
 List<Product> Products = [
-  Product(name: 'RedBull BeachBreeze', imageUrl: 'assets/images/beachbreeze.png', price: 20, description: 'Энергетик со вкусом бриза на пляже. В России не продается.'),
-  Product(name: 'RedBull Acai', imageUrl: 'assets/images/acai.png', price: 10, description: 'Энергетик с Асаи. В России не продается.'),
-  Product(name: 'RedBull Cactus', imageUrl: 'assets/images/cactus.png', price: 999, description: 'Энергетик со вкусом кактуса. В России не продается.'),
-  Product(name: 'RedBull Classic', imageUrl: 'assets/images/classic.png', price: 40, description: 'Энергетик RedBull классический. Есть в России и по всему миру.'),
-  Product(name: 'RedBull Coconut', imageUrl: 'assets/images/coconut.png', price: 50, description: 'Энергетик со вкусом кокоса и ягод. Есть по всему миру. Просто прекрасен.'),
-  Product(name: 'RedBull Grapefruit', imageUrl: 'assets/images/grapefruit.png', price: 60, description: 'Энергетик со вкусом грейпфрута. В России не продается.'),
-  Product(name: 'RedBull Kiwi&Apple', imageUrl: 'assets/images/kiwiapple.png', price: 70, description: 'Энергетик со вкусом киви и яблока. В России не продается.'),
-  Product(name: 'RedBull No Sugar', imageUrl: 'assets/images/nosugar.png', price: 80, description: 'Энергетик RedBull без сахара. Есть в России и по всему миру.'),
-  Product(name: 'RedBull Kratingdaeng', imageUrl: 'assets/images/small.png', price: 90, description: 'Энергетик странный и маленький. В России не продается.'),
-  Product(name: 'RedBull Tangerine', imageUrl: 'assets/images/tangerine.png', price: 150, description: 'Энергетик с тангарином. В России не продается.'),
-  Product(name: 'RedBull Watermalon', imageUrl: 'assets/images/watermelon.png', price: 110, description: 'Энергетик со вкусом арбуза. Есть в России и по всему миру.'),
+  Product(id: 1, name: 'RedBull BeachBreeze', imageUrl: 'assets/images/beachbreeze.png', price: 20, description: 'Энергетик со вкусом бриза на пляже. В России не продается.'),
+  Product(id: 2, name: 'RedBull Acai', imageUrl: 'assets/images/acai.png', price: 10, description: 'Энергетик с Асаи. В России не продается.'),
+  Product(id: 3, name: 'RedBull Cactus', imageUrl: 'assets/images/cactus.png', price: 999, description: 'Энергетик со вкусом кактуса. В России не продается.'),
+  Product(id: 4, name: 'RedBull Classic', imageUrl: 'assets/images/classic.png', price: 40, description: 'Энергетик RedBull классический. Есть в России и по всему миру.'),
+  Product(id: 5, name: 'RedBull Coconut', imageUrl: 'assets/images/coconut.png', price: 50, description: 'Энергетик со вкусом кокоса и ягод. Есть по всему миру. Просто прекрасен.'),
+  Product(id: 6, name: 'RedBull Grapefruit', imageUrl: 'assets/images/grapefruit.png', price: 60, description: 'Энергетик со вкусом грейпфрута. В России не продается.'),
+  Product(id: 7, name: 'RedBull Kiwi&Apple', imageUrl: 'assets/images/kiwiapple.png', price: 70, description: 'Энергетик со вкусом киви и яблока. В России не продается.'),
+  Product(id: 8, name: 'RedBull No Sugar', imageUrl: 'assets/images/nosugar.png', price: 80, description: 'Энергетик RedBull без сахара. Есть в России и по всему миру.'),
+  Product(id: 9, name: 'RedBull Kratingdaeng', imageUrl: 'assets/images/small.png', price: 90, description: 'Энергетик странный и маленький. В России не продается.'),
+  Product(id: 10, name: 'RedBull Tangerine', imageUrl: 'assets/images/tangerine.png', price: 150, description: 'Энергетик с тангарином. В России не продается.'),
+  Product(id: 11, name: 'RedBull Watermalon', imageUrl: 'assets/images/watermelon.png', price: 110, description: 'Энергетик со вкусом арбуза. Есть в России и по всему миру.'),
 ];
 
 class _HomePageState extends State<HomePage> {
@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
               width: 45,
               height: 45,
               child: FittedBox(
-                child: FloatingActionButton(
+                child: IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -139,12 +139,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   },
-                  child: Transform(
+                  icon: Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.rotationY(math.pi),
                     child: Icon(Icons.shopping_cart),
                   ),
-                  backgroundColor: Color(0xFF6e7585),
+                  color: Color(0xff383b42),
                 ),
               ),
             ),
@@ -176,13 +176,13 @@ class _HomePageState extends State<HomePage> {
               },
               decoration: InputDecoration(
                 hintText: searchString.isNotEmpty ? '' : 'Поиск',
-                hintStyle: TextStyle(color: Color(0xff444850)),
+                hintStyle: TextStyle(color: Color(0xff383b42)),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xff444850)),
+                  borderSide: BorderSide(color: Color(0xff383b42)),
                 ),
-                suffixIcon: Icon(Icons.search, color: Color(0xff444850)),
+                suffixIcon: Icon(Icons.search, color: Color(0xff383b42)),
               ),
-                cursorColor: Color(0xff444850),
+                cursorColor: Color(0xff383b42),
             ),)
 
           ),
@@ -273,13 +273,21 @@ class _DropdownWidgetState extends State<DropdownWidget> {
   Widget build(BuildContext context) {
     return DropdownButton(
       value: dropdownValue,
-      icon: const Icon(Icons.keyboard_arrow_down),
+      icon: Icon(
+        Icons.keyboard_arrow_down,
+        color: Colors.white,
+      ),
+      dropdownColor: Colors.white,
+      underline: Divider(
+        color: Colors.white,
+        thickness: 1,
+      ),
       items: items.asMap().entries.map((entry) {
         int index = entry.key;
         String item = entry.value;
         return DropdownMenuItem(
           value: item,
-          child: Text(item),
+          child: Text(item, style: TextStyle(color: Color(0xff27282d)),),
         );
       }).toList(),
       onChanged: (String? newValue) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_one/product.dart';
 import 'package:flutter_one/product_item.dart';
 import 'package:flutter_one/cart_controller.dart';
 import 'package:get/get.dart';
@@ -57,26 +58,34 @@ class _ShoppingCartState extends State<ShoppingCart> {
                       ),
                     );
                   }
-                  return ListView(
-                    children: products.keys.map((product) {
-                      return Dismissible(
-                        key: Key(product.name),
-                        onDismissed: (direction) {
-                          cartController.deleteProduct(product);
-                          cartController.updateList();
-                        },
-                        background: Container(color: Colors.red),
-                        child: ProductItem(
-                          product: product,
-                          onTap: () {},
-                          index: products.keys.toList().indexOf(product),
-                          cartController: cartController,
-                          quantity: products[product]!,
-                          addedToCart: true,
-                        ),
-                      );
-                    }).toList(),
+                  return ListView.builder(
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      int productId = products.keys.elementAt(index);
+                      Product? product = cartController.getProductById(productId);
+                      if (product != null) {
+                        return Dismissible(
+                          key: Key(productId.toString()),
+                          onDismissed: (direction) {
+                            cartController.deleteProduct(productId);
+                            cartController.updateList();
+                          },
+                          background: Container(color: Colors.red),
+                          child: ProductItem(
+                            product: product,
+                            onTap: () {},
+                            index: index,
+                            cartController: cartController,
+                            quantity: products[productId]!,
+                            addedToCart: true,
+                          ),
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
                   );
+
                 }),
               ),
             ),

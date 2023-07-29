@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter_one/main.dart';
 import 'package:flutter_one/product.dart';
+import 'package:get/get.dart';
+import 'cart_controller.dart';
 
 class ProductDetail extends StatelessWidget {
   final Product product;
+  final CartController cartController = Get.find<CartController>();
 
   ProductDetail({required this.product});
 
@@ -21,7 +26,7 @@ class ProductDetail extends StatelessWidget {
         child: GestureDetector(
           child: Container(
             width: double.infinity,
-            height: 500,
+            height: 575,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Color(0xFFf39189),
@@ -56,6 +61,41 @@ class ProductDetail extends StatelessWidget {
                 product.description,
                   style: TextStyle(fontSize: 23),
                   textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 15,),
+                ElevatedButton(
+                  onPressed: () {
+                    cartController.addProduct(product.id);
+                    Get.snackbar(
+                      "Товар добавлен",
+                      "Вы добавили ${product.name} в корзину",
+                      snackPosition:
+                      SnackPosition.BOTTOM,
+                      duration: Duration(seconds: 1),
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Купить',
+                    style: TextStyle(
+                        color: Colors.black, fontSize: 20),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shadowColor: Colors.black,
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                      BorderRadius.circular(20),
+                    ),
+                    backgroundColor:
+                    Color(0xFF7D9295),
+                    fixedSize: Size(170, 50),
+                  ),
                 ),
               ],
             ),
