@@ -43,9 +43,7 @@ class CartController extends GetxController {
         List<String> cartItemData = cartItem.split(':');
         int productId = int.tryParse(cartItemData[0]) ?? 0;
         int quantity = int.tryParse(cartItemData[1]) ?? 0;
-        for (int i = 0; i < quantity; i++) {
-          addProduct(productId);
-        }
+        _products[productId] = quantity;
       }
     }
   }
@@ -66,6 +64,11 @@ class CartController extends GetxController {
     } else if (_products.containsKey(productId)) {
       _products[productId] = _products[productId]! - 1;
     }
+    saveCartToSharedPreferences();
+  }
+
+  void removeAll() {
+    _products.clear();
     saveCartToSharedPreferences();
   }
 

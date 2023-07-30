@@ -10,14 +10,13 @@ class ShoppingCart extends StatefulWidget {
   _ShoppingCartState createState() => _ShoppingCartState();
 }
 
-class _ShoppingCartState extends State<ShoppingCart> {
+class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMixin {
   final CartController cartController = Get.find();
 
   @override
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -91,17 +90,45 @@ class _ShoppingCartState extends State<ShoppingCart> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal:  75, vertical:  15),
+            padding: const EdgeInsets.symmetric(horizontal:  20, vertical:  5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Итого',
                   style: TextStyle(
-                    fontSize: 25,
-                  ),),
+                    fontSize: 18, color: Colors.black,
+                  ), ),
                 Obx(() => Text('${cartController.total}€',
                   style: TextStyle(
-                    fontSize: 25,),)
+                    fontSize: 18, color: Colors.black,),)
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Get.snackbar(
+                    "Покупка совершена!",
+                    "Вы купили энергетиков на ${cartController.total}€",
+                    snackPosition:
+                    SnackPosition.BOTTOM,
+                    duration: Duration(seconds: 2),
+                  );
+                    cartController.removeAll();
+                  },
+                  child: Text(
+                    'Купить',
+                    style: TextStyle(
+                        color: Colors.black, fontSize: 15),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shadowColor: Colors.black,
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                      BorderRadius.circular(20),
+                    ),
+                    backgroundColor:
+                    Color(0xFF7D9295),
+                    fixedSize: Size(125, 30),
+                  ),
                 ),
               ],
             ),
