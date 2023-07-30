@@ -14,11 +14,11 @@ class ProductDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int price = product.price;
+    final int price = product.price!;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(product.name),
+        title: Text(product.name!),
         backgroundColor: Color(0xFF6e7582),
         centerTitle: true,
       ),
@@ -46,7 +46,7 @@ class ProductDetail extends StatelessWidget {
                   height: 300,
                   width: 300,
                   child: Image.asset(
-                    product.imageUrl,
+                    product.imageUrl!,
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -58,14 +58,14 @@ class ProductDetail extends StatelessWidget {
                 ),
                 Container( height: 30),
                 Text(
-                product.description,
+                product.description!,
                   style: TextStyle(fontSize: 23),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 15,),
                 ElevatedButton(
                   onPressed: () {
-                    cartController.addProduct(product.id);
+                    cartController.addProduct(product.id!);
                     Get.snackbar(
                       "Товар добавлен",
                       "Вы добавили ${product.name} в корзину",

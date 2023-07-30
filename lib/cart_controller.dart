@@ -1,11 +1,25 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 import 'package:flutter_one/product.dart';
-import 'package:flutter_one/main.dart';
+import 'package:flutter_one/json_converter.dart';
 
 class CartController extends GetxController {
   RxMap<int, int> _products = <int, int>{}.obs;
   RxMap<int, int> get products => _products;
+
+  List<Product> jsonProducts = [];
+  final JsonConverter jsonConverter = JsonConverter();
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    await loadProducts();
+    await getCartFromSharedPreferences();
+  }
+
+  Future<void> loadProducts() async {
+    jsonProducts = await jsonConverter.ReadJsonData();
+  }
 
   Future<void> saveCartToSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -17,7 +31,6 @@ class CartController extends GetxController {
       String cartItem = '$productId:$quantity';
       cartList.add(cartItem);
     }
-    print(cartList);
     await prefs.setStringList('cart', cartList);
   }
 
@@ -38,7 +51,7 @@ class CartController extends GetxController {
   }
 
   Product? getProductById(int id) {
-    return Products.firstWhere((product) => product.id == id);
+    return jsonProducts.firstWhere((product) => product.id == id);
   }
 
 
@@ -73,7 +86,7 @@ class CartController extends GetxController {
     int quantity = entry.value;
     Product? product = getProductById(productId);
     if (product != null) {
-      return total + (product.price * quantity);
+      return total + (product.price! * quantity);
     }
     return total;
   });

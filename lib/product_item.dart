@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_one/product.dart';
 import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
+import 'package:flutter_one/json_converter.dart';
 import 'package:flutter_one/cart_controller.dart';
 
 class ProductItem extends StatefulWidget {
@@ -30,10 +31,9 @@ class ProductItem extends StatefulWidget {
 class _ProductItemState extends State<ProductItem> {
   bool showBuyButton = true;
 
-
   @override
   Widget build(BuildContext context) {
-    final int price = widget.product.price;
+    final int price = widget.product.price!;
 
 
     return Padding(
@@ -60,7 +60,7 @@ class _ProductItemState extends State<ProductItem> {
                   alignment: Alignment.centerLeft,
                   margin: EdgeInsets.symmetric(horizontal: 13),
                   child: Text(
-                    widget.product.name,
+                    widget.product.name!,
                     style: TextStyle(fontSize: 15, color: Colors.black),
                     textAlign: TextAlign.center,
                   ),
@@ -71,7 +71,7 @@ class _ProductItemState extends State<ProductItem> {
                 width: 150,
                 height: 150,
                 child: Image.asset(
-                  widget.product.imageUrl,
+                  widget.product.imageUrl!,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -98,7 +98,7 @@ class _ProductItemState extends State<ProductItem> {
                             IconButton(
                               onPressed: () {
                                 setState(() {
-                                    widget.cartController.removeProduct(widget.product.id);
+                                    widget.cartController.removeProduct(widget.product.id!);
                                     if (widget.cartController.products[widget.product.id] == 0 || widget.cartController.products[widget.product.id] == null) {
                                       widget.addedToCart = false;
                                       showBuyButton = true;
@@ -114,7 +114,7 @@ class _ProductItemState extends State<ProductItem> {
                             IconButton(
                               onPressed: () {
                                 setState(() {
-                                  widget.cartController.addProduct(widget.product.id);
+                                  widget.cartController.addProduct(widget.product.id!);
                                 });
                               },
                               icon: Icon(Icons.add_circle),
@@ -132,7 +132,7 @@ class _ProductItemState extends State<ProductItem> {
                             SizedBox(height: 5),
                             ElevatedButton(
                               onPressed: () {
-                                widget.cartController.addProduct(widget.product.id);
+                                widget.cartController.addProduct(widget.product.id!);
                                 setState(() {
                                   widget.addedToCart = true;
                                   showBuyButton = false;

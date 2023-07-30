@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_one/json_converter.dart';
 import 'package:flutter_one/product_detail.dart';
 import 'package:flutter_one/product_item.dart';
 import 'package:flutter_one/product.dart';
@@ -31,22 +32,28 @@ late bool nameSort;
 String searchString = "";
 
 
-List<Product> Products = [
-  Product(id: 1, name: 'RedBull BeachBreeze', imageUrl: 'assets/images/beachbreeze.png', price: 20, description: 'Энергетик со вкусом бриза на пляже. В России не продается.'),
-  Product(id: 2, name: 'RedBull Acai', imageUrl: 'assets/images/acai.png', price: 10, description: 'Энергетик с Асаи. В России не продается.'),
-  Product(id: 3, name: 'RedBull Cactus', imageUrl: 'assets/images/cactus.png', price: 999, description: 'Энергетик со вкусом кактуса. В России не продается.'),
-  Product(id: 4, name: 'RedBull Classic', imageUrl: 'assets/images/classic.png', price: 40, description: 'Энергетик RedBull классический. Есть в России и по всему миру.'),
-  Product(id: 5, name: 'RedBull Coconut', imageUrl: 'assets/images/coconut.png', price: 50, description: 'Энергетик со вкусом кокоса и ягод. Есть по всему миру. Просто прекрасен.'),
-  Product(id: 6, name: 'RedBull Grapefruit', imageUrl: 'assets/images/grapefruit.png', price: 60, description: 'Энергетик со вкусом грейпфрута. В России не продается.'),
-  Product(id: 7, name: 'RedBull Kiwi&Apple', imageUrl: 'assets/images/kiwiapple.png', price: 70, description: 'Энергетик со вкусом киви и яблока. В России не продается.'),
-  Product(id: 8, name: 'RedBull No Sugar', imageUrl: 'assets/images/nosugar.png', price: 80, description: 'Энергетик RedBull без сахара. Есть в России и по всему миру.'),
-  Product(id: 9, name: 'RedBull Kratingdaeng', imageUrl: 'assets/images/small.png', price: 90, description: 'Энергетик странный и маленький. В России не продается.'),
-  Product(id: 10, name: 'RedBull Tangerine', imageUrl: 'assets/images/tangerine.png', price: 150, description: 'Энергетик с тангарином. В России не продается.'),
-  Product(id: 11, name: 'RedBull Watermalon', imageUrl: 'assets/images/watermelon.png', price: 110, description: 'Энергетик со вкусом арбуза. Есть в России и по всему миру.'),
-];
+// List<Product> Products = [
+//   Product(id: 1, name: 'RedBull BeachBreeze', imageUrl: 'assets/images/beachbreeze.png', price: 20, description: 'Энергетик со вкусом бриза на пляже. В России не продается.'),
+//   Product(id: 2, name: 'RedBull Acai', imageUrl: 'assets/images/acai.png', price: 10, description: 'Энергетик с Асаи. В России не продается.'),
+//   Product(id: 3, name: 'RedBull Cactus', imageUrl: 'assets/images/cactus.png', price: 999, description: 'Энергетик со вкусом кактуса. В России не продается.'),
+//   Product(id: 4, name: 'RedBull Classic', imageUrl: 'assets/images/classic.png', price: 40, description: 'Энергетик RedBull классический. Есть в России и по всему миру.'),
+//   Product(id: 5, name: 'RedBull Coconut', imageUrl: 'assets/images/coconut.png', price: 50, description: 'Энергетик со вкусом кокоса и ягод. Есть по всему миру. Просто прекрасен.'),
+//   Product(id: 6, name: 'RedBull Grapefruit', imageUrl: 'assets/images/grapefruit.png', price: 60, description: 'Энергетик со вкусом грейпфрута. В России не продается.'),
+//   Product(id: 7, name: 'RedBull Kiwi&Apple', imageUrl: 'assets/images/kiwiapple.png', price: 70, description: 'Энергетик со вкусом киви и яблока. В России не продается.'),
+//   Product(id: 8, name: 'RedBull No Sugar', imageUrl: 'assets/images/nosugar.png', price: 80, description: 'Энергетик RedBull без сахара. Есть в России и по всему миру.'),
+//   Product(id: 9, name: 'RedBull Kratingdaeng', imageUrl: 'assets/images/small.png', price: 90, description: 'Энергетик странный и маленький. В России не продается.'),
+//   Product(id: 10, name: 'RedBull Tangerine', imageUrl: 'assets/images/tangerine.png', price: 150, description: 'Энергетик с тангарином. В России не продается.'),
+//   Product(id: 11, name: 'RedBull Watermalon', imageUrl: 'assets/images/watermelon.png', price: 110, description: 'Энергетик со вкусом арбуза. Есть в России и по всему миру.'),
+// ];
 
 class _HomePageState extends State<HomePage> {
 
+  List<Product> jsonProducts = [];
+  final JsonConverter jsonConverter = JsonConverter();
+
+  Future<void> loadProducts() async {
+    jsonProducts = await jsonConverter.ReadJsonData();
+  }
 
   final CartController cartController = Get.put(CartController());
 
@@ -65,6 +72,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> loadAndSortProducts() async {
     int state = await loadState();
 
+    await loadProducts();
+
     if (state == 0) {
       sortByName(false);
     } else if (state == 1) {
@@ -79,9 +88,9 @@ class _HomePageState extends State<HomePage> {
   void sortByName(bool descendingNameUp) {
     setState(() {
       if (descendingNameUp) {
-        Products.sort((a, b) => b.name.compareTo(a.name));
+        jsonProducts.sort((a, b) => b.name!.compareTo(a.name!));
       } else {
-        Products.sort((a, b) => a.name.compareTo(b.name));
+        jsonProducts.sort((a, b) => a.name!.compareTo(b.name!));
       }
     });
   }
@@ -89,9 +98,9 @@ class _HomePageState extends State<HomePage> {
   void sortByPrice(bool descendingPriceUp) {
     setState(() {
       if (descendingPriceUp) {
-        Products.sort((a, b) => b.price.compareTo(a.price));
+        jsonProducts.sort((a, b) => b.price!.compareTo(a.price!));
       } else {
-        Products.sort((a, b) => a.price.compareTo(b.price));
+        jsonProducts.sort((a, b) => a.price!.compareTo(b.price!));
       }
     });
   }
@@ -187,33 +196,32 @@ class _HomePageState extends State<HomePage> {
 
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: Products.length,
-              itemBuilder: (context, index) {
-                return Products[index].name.toLowerCase().contains(searchString) ?
-                  ProductItem(
-                  product: Products[index],
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ProductDetail(product: Products[index]),
-                      ),
-                    );
-                  },
-                  index: index,
-                  cartController: cartController,
-                  quantity: 1,
-                  addedToCart: false,
-                ) :
+            child:  ListView.builder(
+                  itemCount: jsonProducts.length,
+                  itemBuilder: (context, index) {
+                    return jsonProducts[index].name.toString().toLowerCase().contains(
+                        searchString) ?
+                    ProductItem(
+                      product: jsonProducts[index],
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProductDetail(product: jsonProducts[index]),
+                          ),
+                        );
+                      },
+                      index: index,
+                      cartController: cartController,
+                      quantity: 1,
+                      addedToCart: false,
+                    ) :
                     Container();
-              },
+                  },
             ),
           ),
-
         ],),
-
       ),
     );
   }
