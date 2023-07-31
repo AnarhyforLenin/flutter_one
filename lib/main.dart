@@ -19,6 +19,7 @@ void main() async {
   await cartController.getCartFromSharedPreferences();
 
   runApp(GetMaterialApp(
+    debugShowCheckedModeBanner: false,
     home: HomePage(),
   ));
 }
@@ -139,26 +140,48 @@ class _HomePageState extends State<HomePage> {
               width: 45,
               height: 45,
               child: FittedBox(
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ShoppingCart(),
+                child: Obx (() => Stack(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ShoppingCart(),
+                          ),
+                        );
+                      },
+                      icon: Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(math.pi),
+                        child: Icon(Icons.shopping_cart),
                       ),
-                    );
-                  },
-                  icon: Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.rotationY(math.pi),
-                    child: Icon(Icons.shopping_cart),
-                  ),
-                  color: Color(0xff383b42),
-                ),
-              ),
+                      color: Color(0xff383b42),
+                    ),
+                    (cartController.products.length > 0) ?
+                    Positioned(
+                      right: 4,
+                      bottom: 4,
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFFf39189),
+                        ),
+                        child: Obx (() => Text(
+                          cartController.products.length.toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),),
+                      ),
+                    ): Container(),
+                  ],
+                ),),
+
             ),
-            SizedBox(
-              width: 10,
             ),
           ],
           backgroundColor: Color(0xFF6e7582),
