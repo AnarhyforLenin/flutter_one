@@ -39,6 +39,8 @@ dependencies:
   cloud_firestore: ^2.4.0
   firebase_core: ^1.4.0
   shared_preferences: ^2.0.6
+  sqflite: ^2.3.0
+  path_provider: ^2.0.15
 
 dev_dependencies:
   flutter_test:

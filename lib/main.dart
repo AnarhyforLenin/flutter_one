@@ -29,36 +29,21 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-late bool nameSort;
-String searchString = "";
-
-
-// List<Product> Products = [
-//   Product(id: 1, name: 'RedBull BeachBreeze', imageUrl: 'assets/images/beachbreeze.png', price: 20, description: 'Энергетик со вкусом бриза на пляже. В России не продается.'),
-//   Product(id: 2, name: 'RedBull Acai', imageUrl: 'assets/images/acai.png', price: 10, description: 'Энергетик с Асаи. В России не продается.'),
-//   Product(id: 3, name: 'RedBull Cactus', imageUrl: 'assets/images/cactus.png', price: 999, description: 'Энергетик со вкусом кактуса. В России не продается.'),
-//   Product(id: 4, name: 'RedBull Classic', imageUrl: 'assets/images/classic.png', price: 40, description: 'Энергетик RedBull классический. Есть в России и по всему миру.'),
-//   Product(id: 5, name: 'RedBull Coconut', imageUrl: 'assets/images/coconut.png', price: 50, description: 'Энергетик со вкусом кокоса и ягод. Есть по всему миру. Просто прекрасен.'),
-//   Product(id: 6, name: 'RedBull Grapefruit', imageUrl: 'assets/images/grapefruit.png', price: 60, description: 'Энергетик со вкусом грейпфрута. В России не продается.'),
-//   Product(id: 7, name: 'RedBull Kiwi&Apple', imageUrl: 'assets/images/kiwiapple.png', price: 70, description: 'Энергетик со вкусом киви и яблока. В России не продается.'),
-//   Product(id: 8, name: 'RedBull No Sugar', imageUrl: 'assets/images/nosugar.png', price: 80, description: 'Энергетик RedBull без сахара. Есть в России и по всему миру.'),
-//   Product(id: 9, name: 'RedBull Kratingdaeng', imageUrl: 'assets/images/small.png', price: 90, description: 'Энергетик странный и маленький. В России не продается.'),
-//   Product(id: 10, name: 'RedBull Tangerine', imageUrl: 'assets/images/tangerine.png', price: 150, description: 'Энергетик с тангарином. В России не продается.'),
-//   Product(id: 11, name: 'RedBull Watermalon', imageUrl: 'assets/images/watermelon.png', price: 110, description: 'Энергетик со вкусом арбуза. Есть в России и по всему миру.'),
-// ];
-
 class _HomePageState extends State<HomePage> {
+
+  static bool nameSort = false;
+  String searchString = "";
 
   List<Product> jsonProducts = [];
   final JsonConverter jsonConverter = JsonConverter();
 
-  Future<void> loadProducts() async {
+  Future<void> _loadProducts() async {
     jsonProducts = await jsonConverter.ReadJsonData();
   }
 
   final CartController cartController = Get.put(CartController());
 
-  Future<int> loadState () async {
+  Future<int> _loadState () async {
     final prefs = await SharedPreferences.getInstance();
     final int state = prefs.getInt('firstValue') ?? 0;
     return state;
@@ -67,26 +52,26 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    loadAndSortProducts();
+    _loadAndSortProducts();
   }
 
-  Future<void> loadAndSortProducts() async {
-    int state = await loadState();
+  Future<void> _loadAndSortProducts() async {
+    int state = await _loadState();
 
-    await loadProducts();
+    await _loadProducts();
 
     if (state == 0) {
-      sortByName(false);
+      _sortByName(false);
     } else if (state == 1) {
-      sortByName(true);
+      _sortByName(true);
     } else if (state == 2) {
-      sortByPrice(false);
+      _sortByPrice(false);
     } else if (state == 3) {
-      sortByPrice(true);
+      _sortByPrice(true);
     }
   }
 
-  void sortByName(bool descendingNameUp) {
+  void _sortByName(bool descendingNameUp) {
     setState(() {
       if (descendingNameUp) {
         jsonProducts.sort((a, b) => b.name!.compareTo(a.name!));
@@ -96,7 +81,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void sortByPrice(bool descendingPriceUp) {
+  void _sortByPrice(bool descendingPriceUp) {
     setState(() {
       if (descendingPriceUp) {
         jsonProducts.sort((a, b) => b.price!.compareTo(a.price!));
@@ -125,9 +110,9 @@ class _HomePageState extends State<HomePage> {
                 child: DropdownWidget(
                   sortCallback: (descending) {
                     if (nameSort) {
-                      sortByName(descending);
+                      _sortByName(descending);
                     } else {
-                      sortByPrice(descending);
+                      _sortByPrice(descending);
                     }
                   },
                 ),
@@ -219,35 +204,35 @@ class _HomePageState extends State<HomePage> {
 
           ),
           Expanded(
-            child:  ListView.builder(
-                  itemCount: jsonProducts.length,
-                  itemBuilder: (context, index) {
-                    return jsonProducts[index].name.toString().toLowerCase().contains(
-                        searchString) ?
-                    ProductItem(
-                      product: jsonProducts[index],
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ProductDetail(product: jsonProducts[index]),
-                          ),
-                        );
-                      },
-                      index: index,
-                      cartController: cartController,
-                      quantity: 1,
-                      addedToCart: false,
-                    ) :
-                    Container();
-                  },
-            ),
+              child: _productsListView(searchString.isEmpty ? jsonProducts : jsonProducts..where((product) => product.name.toString().toLowerCase().contains(searchString)).toList(),),
           ),
         ],),
       ),
     );
   }
+
+  Widget _productsListView(List<Product> products) => ListView.builder(
+    itemCount: products.length,
+    itemBuilder: (context, index) {
+      final product = products[index];
+
+      return ProductItem(
+        product: product,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetail(product: product),
+            ),
+          );
+        },
+        index: index,
+        cartController: cartController,
+        quantity: 1,
+        addedToCart: false,
+      );
+    },
+  );
 }
 
 class DropdownWidget extends StatefulWidget {
@@ -327,10 +312,10 @@ class _DropdownWidgetState extends State<DropdownWidget> {
           dropdownValueIndex = items.indexOf(dropdownValue);
           saveState();
           if (isDescendingByName) {
-            nameSort = true;
+            _HomePageState.nameSort = true;
             widget.sortCallback(dropdownValue.startsWith('Имя ↓'));
           } else if (isDescendingByPrice) {
-            nameSort = false;
+            _HomePageState.nameSort = false;
             widget.sortCallback(dropdownValue.startsWith('Цена ↓'));
           }
         });

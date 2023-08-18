@@ -8,4 +8,8 @@ class JsonConverter {
     final list = json.decode(jsondata) as List<dynamic>;
     return list.map((e) => Product.fromJson(e)).toList();
   }
+
+  List<Map<String, dynamic>> WriteJsonData(List<Product> products) {
+    return products.map((product) => product.toJson()).toList();
+  }
 }
