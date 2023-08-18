@@ -5,6 +5,7 @@ import 'package:flutter_one/product_item.dart';
 import 'package:flutter_one/product.dart';
 import 'package:flutter_one/shopping_cart.dart';
 import 'package:flutter_one/cart_controller.dart';
+import 'package:flutter_one/data_base.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
@@ -13,10 +14,9 @@ import 'dart:math' as math;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final cartController = Get.put(CartController());
 
   await Get.putAsync(() => SharedPreferences.getInstance());
-  await cartController.getCartFromSharedPreferences();
+  await DataBase.initDatabase();
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
@@ -204,7 +204,8 @@ class _HomePageState extends State<HomePage> {
 
           ),
           Expanded(
-              child: _productsListView(searchString.isEmpty ? jsonProducts : jsonProducts..where((product) => product.name.toString().toLowerCase().contains(searchString)).toList(),),
+              child: _productsListView(searchString.isEmpty ? jsonProducts : jsonProducts.where((product) => product.name.toString().toLowerCase().contains(searchString)).toList(),),
+
           ),
         ],),
       ),
