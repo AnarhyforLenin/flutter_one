@@ -5,6 +5,7 @@ import 'package:flutter_one/product_item.dart';
 import 'package:flutter_one/product.dart';
 import 'package:flutter_one/shopping_cart.dart';
 import 'package:flutter_one/cart_controller.dart';
+import 'package:flutter_one/add_product.dart';
 import 'package:flutter_one/data_base.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -180,34 +181,56 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        body: Column(children: [
-          Padding(
-            padding: const EdgeInsets.all(7),
-            child: Container (
-              height: 40,
-              child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  searchString = value.toLowerCase();
-                });
-              },
-              decoration: InputDecoration(
-                hintText: searchString.isNotEmpty ? '' : 'Поиск',
-                hintStyle: TextStyle(color: Color(0xff383b42)),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xff383b42)),
-                ),
-                suffixIcon: Icon(Icons.search, color: Color(0xff383b42)),
+        body: Stack (
+          children: [
+            Column(children: [
+              Padding(
+                  padding: const EdgeInsets.all(7),
+                  child: Container (
+                    height: 40,
+                    child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          searchString = value.toLowerCase();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: searchString.isNotEmpty ? '' : 'Поиск',
+                        hintStyle: TextStyle(color: Color(0xff383b42)),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xff383b42)),
+                        ),
+                        suffixIcon: Icon(Icons.search, color: Color(0xff383b42)),
+                      ),
+                      cursorColor: Color(0xff383b42),
+                    ),)
+
               ),
-                cursorColor: Color(0xff383b42),
-            ),)
+              Expanded(
+                child: _productsListView(searchString.isEmpty ? jsonProducts : jsonProducts.where((product) => product.name.toString().toLowerCase().contains(searchString)).toList(),),
 
-          ),
-          Expanded(
-              child: _productsListView(searchString.isEmpty ? jsonProducts : jsonProducts.where((product) => product.name.toString().toLowerCase().contains(searchString)).toList(),),
+              ),
+            ],),
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child:
+              FloatingActionButton(
+                onPressed: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => AddProduct(),
+                  //   ),
+                  // );
+                },
+                child: Icon(Icons.add),
+                backgroundColor: Color(0xFF49212b),
+              ),
+            ),
+          ],
+        ),
 
-          ),
-        ],),
       ),
     );
   }

@@ -15,7 +15,6 @@ class CartController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    await DataBase.initDatabase();
     List<CartProductEntity> dataCart = await DataBase().products();
     _products = convertToCart(dataCart);
     await loadProducts();
@@ -73,12 +72,10 @@ class CartController extends GetxController {
   void addProduct(int productId) async {
     _products.update(productId, (quantity) => quantity + 1, ifAbsent: () => 1);
 
-    List<CartProductEntity> cart = await DataBase().getEntityByProductId(productId);
-
     CartProductEntity cartProductEntity = CartProductEntity(productId: productId,
         quantity: _products[productId]);
 
-    if (cart.isEmpty) {
+    if (await DataBase().hasProducts(productId)) {
       DataBase().insertProductIntoCart(cartProductEntity);
     } else {
       DataBase().updateProduct(cartProductEntity);
