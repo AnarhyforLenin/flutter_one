@@ -5,7 +5,7 @@ import 'package:flutter_one/product_item.dart';
 import 'package:flutter_one/product.dart';
 import 'package:flutter_one/shopping_cart.dart';
 import 'package:flutter_one/cart_controller.dart';
-import 'package:flutter_one/add_product.dart';
+//import 'package:flutter_one/add_product.dart';
 import 'package:flutter_one/data_base.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +17,7 @@ void main() async {
 
 
   await Get.putAsync(() => SharedPreferences.getInstance());
-  await DataBase.initDatabase();
+  //await DataBase.initDatabase();
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
@@ -47,6 +47,7 @@ class _HomePageState extends State<HomePage> {
   Future<int> _loadState () async {
     final prefs = await SharedPreferences.getInstance();
     final int state = prefs.getInt('firstValue') ?? 0;
+    await cartController.loadData();
     return state;
   }
 
@@ -101,21 +102,25 @@ class _HomePageState extends State<HomePage> {
         scaffoldBackgroundColor: const Color(0xFF6e7582),
       ),
       home: Scaffold(
+        extendBody: true,
         appBar: AppBar(
           leading: Padding(
-            padding: const EdgeInsets.only(left: 15),
+            padding: const EdgeInsets.only(left: 8),
             child: SizedBox(
               width: 100,
               child: Container(
                 width: 100,
-                child: DropdownWidget(
-                  sortCallback: (descending) {
-                    if (nameSort) {
-                      _sortByName(descending);
-                    } else {
-                      _sortByPrice(descending);
-                    }
-                  },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: DropdownWidget(
+                    sortCallback: (descending) {
+                      if (nameSort) {
+                        _sortByName(descending);
+                      } else {
+                        _sortByPrice(descending);
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
@@ -123,12 +128,13 @@ class _HomePageState extends State<HomePage> {
           leadingWidth: 100,
           actions: [
             SizedBox(
-              width: 45,
-              height: 45,
+              width: 60,
+              height: 60,
               child: FittedBox(
                 child: Obx (() => Stack(
                   children: [
-                    IconButton(
+                    Padding(padding: EdgeInsets.only(right: 20),
+                    child: IconButton(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -143,10 +149,10 @@ class _HomePageState extends State<HomePage> {
                         child: Icon(Icons.shopping_cart),
                       ),
                       color: Color(0xff383b42),
-                    ),
+                    ),),
                     (cartController.products.length > 0) ?
                     Positioned(
-                      right: 4,
+                      right: 20,
                       bottom: 4,
                       child: Container(
                         padding: EdgeInsets.all(4),
@@ -210,28 +216,30 @@ class _HomePageState extends State<HomePage> {
                 child: _productsListView(searchString.isEmpty ? jsonProducts : jsonProducts.where((product) => product.name.toString().toLowerCase().contains(searchString)).toList(),),
 
               ),
+
             ],),
-            Positioned(
-              bottom: 20,
-              right: 20,
-              child:
-              FloatingActionButton(
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => AddProduct(),
-                  //   ),
-                  // );
-                },
-                child: Icon(Icons.add),
-                backgroundColor: Color(0xFF49212b),
-              ),
-            ),
+
+            // Positioned(
+            //   bottom: 20,
+            //   right: 20,
+            //   child:
+            //   FloatingActionButton(
+            //     onPressed: () {
+            //       // Navigator.push(
+            //       //   context,
+            //       //   MaterialPageRoute(
+            //       //     builder: (context) => AddProduct(),
+            //       //   ),
+            //       // );
+            //     },
+            //     child: Icon(Icons.add),
+            //     backgroundColor: Color(0xFF49212b),
+            //   ),
+            // ),
           ],
         ),
-
-      ),
+          bottomNavigationBar: bottomNavigationBar(context),
+        ),
     );
   }
 
@@ -257,6 +265,34 @@ class _HomePageState extends State<HomePage> {
       );
     },
   );
+  Container bottomNavigationBar(BuildContext context) {
+    return Container(
+      height: 60,
+      decoration: BoxDecoration(
+        color: Colors.white30,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+            enableFeedback: false,
+            onPressed: () {
+
+            },
+            icon: const Icon(
+              Icons.account_circle,
+              color: Colors.white,
+              size: 35,
+            )
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class DropdownWidget extends StatefulWidget {
@@ -311,23 +347,34 @@ class _DropdownWidgetState extends State<DropdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton(
+    return DropdownButtonFormField<String>(
+      decoration: InputDecoration(
+        contentPadding:
+        EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25),
+          borderSide: BorderSide(color: Color(0xff27282d)),
+        ),
+      ),
+      borderRadius: BorderRadius.circular(25)
+          .copyWith(topLeft: Radius.circular(0)),
       value: dropdownValue,
       icon: Icon(
         Icons.keyboard_arrow_down,
         color: Colors.white,
       ),
-      dropdownColor: Colors.white,
-      underline: Divider(
-        color: Colors.white,
-        thickness: 1,
-      ),
+      iconSize: 13,
+      dropdownColor: Color(0xFF6e7582),
       items: items.asMap().entries.map((entry) {
         int index = entry.key;
         String item = entry.value;
         return DropdownMenuItem(
           value: item,
-          child: Text(item, style: TextStyle(color: Color(0xff27282d)),),
+          child: Text(item, style: TextStyle(color: Color(0xff27282d), fontSize: 15),),
+
         );
       }).toList(),
       onChanged: (String? newValue) {

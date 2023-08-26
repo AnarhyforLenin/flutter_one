@@ -18,12 +18,12 @@ class DataBase {
 
   Database? _database;
 
-  Future<Database> getDatabase() async {
-    _database ??= await initDatabase();
+  Future<Database> _getDatabase() async {
+    _database ??= await _initDatabase();
     return _database!;
   }
 
-  static Future<Database> initDatabase() async {
+  static Future<Database> _initDatabase() async {
     final database = openDatabase(
       join(await getDatabasesPath(), 'cart_products.db'),
       onCreate: (db, version) {
@@ -37,7 +37,7 @@ class DataBase {
   }
 
   Future<void> insertProductIntoCart(CartProductEntity cartProductEntity) async {
-    final db = await getDatabase();
+    final db = await _getDatabase();
     await db.insert(
       Util.tableCart,
       cartProductEntity.toMap(),
@@ -46,7 +46,7 @@ class DataBase {
   }
 
   Future<List<CartProductEntity>> products() async {
-    final db = await getDatabase();
+    final db = await _getDatabase();
 
     final List<Map<String, dynamic>> maps = await db.query('cart');
 
@@ -58,7 +58,7 @@ class DataBase {
   }
 
   Future<CartProductEntity?> getProductById(int productId) async {
-    final db = await getDatabase();
+    final db = await _getDatabase();
 
     final List<Map<String, dynamic>> maps = await db.query(
       Util.tableCart,
@@ -75,7 +75,7 @@ class DataBase {
   }
 
   Future<void> updateProduct(CartProductEntity cartProductEntity) async {
-    final db = await getDatabase();
+    final db = await _getDatabase();
 
     await db.update(
       Util.tableCart,
@@ -86,7 +86,7 @@ class DataBase {
   }
 
   Future<void> deleteProduct(int id) async {
-    final db = await getDatabase();
+    final db = await _getDatabase();
     await db.delete(
       Util.tableCart,
       where: '${Util.columnProductId} = ?',

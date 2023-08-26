@@ -15,9 +15,13 @@ class CartController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    //await loadData();
+    await loadProducts();
+  }
+
+  Future<void> loadData() async {
     List<CartProductEntity> dataCart = await DataBase().products();
     _products = convertToCart(dataCart);
-    await loadProducts();
   }
 
   RxMap<int, int> convertToCart(List<CartProductEntity> cartProducts) {
@@ -33,33 +37,6 @@ class CartController extends GetxController {
   Future<void> loadProducts() async {
     jsonProducts = await jsonConverter.ReadJsonData();
   }
-
-  // Future<void> saveCartToSharedPreferences() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   List<String> cartList = [];
-  //   for (var entry in _products.entries) {
-  //     int productId = entry.key;
-  //     int quantity = entry.value;
-  //
-  //     String cartItem = '$productId:$quantity';
-  //     cartList.add(cartItem);
-  //   }
-  //   await prefs.setStringList('cart', cartList);
-  // }
-  //
-  // Future<void> getCartFromSharedPreferences() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   List<String>? cartList = prefs.getStringList('cart');
-  //   if (cartList != null) {
-  //
-  //     for (String cartItem in cartList) {
-  //       List<String> cartItemData = cartItem.split(':');
-  //       int productId = int.tryParse(cartItemData[0]) ?? 0;
-  //       int quantity = int.tryParse(cartItemData[1]) ?? 0;
-  //       _products[productId] = quantity;
-  //     }
-  //   }
-  // }
 
   Product? getProductById(int id) {
     return jsonProducts.firstWhere((product) => product.id == id);
