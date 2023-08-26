@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'package:flutter_one/cart_product_entity.dart';
+import 'package:flutter_one/user.dart';
 import 'package:flutter_one/util.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -25,13 +26,16 @@ class DataBase {
 
   static Future<Database> _initDatabase() async {
     final database = openDatabase(
-      join(await getDatabasesPath(), 'cart_products.db'),
+      join(await getDatabasesPath(), 'cart_and_users.db'),
       onCreate: (db, version) {
-        return db.execute(
+        db.execute(
           'CREATE TABLE IF NOT EXISTS cart(product_id INTEGER UNIQUE, quantity INTEGER)',
         );
+        db.execute(
+          'CREATE TABLE IF NOT EXISTS users(user_email STRING UNIQUE, password string)',
+        );
       },
-      version: 1,
+      version: 2,
     );
     return database;
   }
@@ -41,6 +45,15 @@ class DataBase {
     await db.insert(
       Util.tableCart,
       cartProductEntity.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> insertUser(User user) async {
+    final db = await _getDatabase();
+    await db.insert(
+      Util.tableUsers,
+      user.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -74,6 +87,23 @@ class DataBase {
     }
   }
 
+  Future<User?> geUserByEmail(String email) async {
+    final db = await _getDatabase();
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      Util.tableUsers,
+      where: '${Util.columnEmail} = ?',
+      whereArgs: [email],
+      limit: 1,
+    );
+
+    if (maps.isNotEmpty) {
+      return User.fromMap(maps[0]);
+    } else {
+      return null;
+    }
+  }
+
   Future<void> updateProduct(CartProductEntity cartProductEntity) async {
     final db = await _getDatabase();
 
@@ -82,6 +112,17 @@ class DataBase {
       cartProductEntity.toMap(),
       where: '${Util.columnProductId} = ?',
       whereArgs: [cartProductEntity.productId],
+    );
+  }
+
+  Future<void> updateUser(User user) async {
+    final db = await _getDatabase();
+
+    await db.update(
+      Util.tableUsers,
+      User().toMap(),
+      where: '${Util.columnEmail} = ?',
+      whereArgs: [user.email],
     );
   }
 

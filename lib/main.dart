@@ -5,8 +5,8 @@ import 'package:flutter_one/product_item.dart';
 import 'package:flutter_one/product.dart';
 import 'package:flutter_one/shopping_cart.dart';
 import 'package:flutter_one/cart_controller.dart';
+import 'package:flutter_one/registration_page.dart';
 //import 'package:flutter_one/add_product.dart';
-import 'package:flutter_one/data_base.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
@@ -281,7 +281,12 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             enableFeedback: false,
             onPressed: () {
-
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RegistrationPage(),
+                ),
+              );
             },
             icon: const Icon(
               Icons.account_circle,
