@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_one/product.dart';
+import 'package:flutter_one/data_base.dart';
+import 'package:flutter_one/user.dart';
 import 'package:get/get.dart';
 import 'dart:io';
 
@@ -12,6 +13,85 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
+
+  String email = '';
+  String password = '';
+
+  void addUser(String email, String password) async {
+    if (email.isEmpty || password.isEmpty) {
+      Get.snackbar(
+        "Введите данные",
+        "Проверьте ввод почты и пароля",
+        snackPosition:
+        SnackPosition.TOP,
+        duration: const Duration(seconds: 3),
+      );
+    } else {
+      if (await DataBase().hasUser(email)) {
+        Get.snackbar(
+          "Пользователь с такой почтой уже существует",
+          "Попробуйте войти, введя пароль",
+          snackPosition:
+          SnackPosition.TOP,
+          duration: const Duration(seconds: 5),
+        );
+      } else {
+        User user = User(
+            email: email,
+            password: password
+        );
+        await DataBase().insertUser(user);
+        Get.snackbar(
+          "вы зарегались",
+          "Поздравляю блять",
+          snackPosition:
+          SnackPosition.TOP,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    }
+  }
+
+  void signUser (String email, String password) async{
+    if (email.isEmpty || password.isEmpty) {
+      Get.snackbar(
+        "Введите данные",
+        "Проверьте ввод почты и пароля",
+        snackPosition:
+        SnackPosition.TOP,
+        duration: const Duration(seconds: 3),
+      );
+    } else {
+      if (!(await DataBase().hasUser(email))) {
+        Get.snackbar(
+          "Пользователя с такой почтой не существует",
+          "Проверьте правильность введения почты",
+          snackPosition:
+          SnackPosition.TOP,
+          duration: const Duration(seconds: 5),
+        );
+      } else {
+        String? storedPassword = await DataBase().getPasswordByEmail(email);
+        if (storedPassword == password) {
+          Get.snackbar(
+            "Вы вошли!",
+            "Начинайте закупаться энергетиками!",
+            snackPosition:
+            SnackPosition.TOP,
+            duration: const Duration(seconds: 5),
+          );
+        } else {
+          Get.snackbar(
+            "Неверный пароль",
+            "Проверьте правильность введения пароля или сбросьте его",
+            snackPosition:
+            SnackPosition.TOP,
+            duration: const Duration(seconds: 5),
+          );
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +143,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     Padding(
                         padding: EdgeInsets.only(right: 5, left: 5, bottom: 5),
                         child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              email = value;
+                            });
+                          },
                           decoration: InputDecoration(
                             hintText: 'Почта',
                             enabledBorder: OutlineInputBorder(
@@ -76,6 +161,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10,horizontal: 5),
                       child: TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            password = value;
+                          });
+                        },
                         decoration: InputDecoration(
                           hintText: 'Пароль',
                           enabledBorder: OutlineInputBorder(
@@ -91,6 +181,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
+                          signUser(email, password);
                         },
                         child: Text(
                           'Войти',
@@ -129,6 +220,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
+                          addUser(email, password);
                         },
                         child: Text(
                           'Зарегистрироваться',
@@ -177,3 +269,4 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 }
+

@@ -15,7 +15,6 @@ class CartController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    //await loadData();
     await loadProducts();
   }
 

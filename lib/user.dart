@@ -4,6 +4,8 @@ class User {
 
   User({this.email, this.password});
 
+  String? get getPassword => password;
+
   Map<String, dynamic> toMap() {
     return {
       'email': email,
@@ -14,7 +16,7 @@ class User {
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       email: map['email'],
-      password: map['password'],
+      password: map['password'].toString(),
     );
   }
 }

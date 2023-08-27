@@ -32,7 +32,7 @@ class DataBase {
           'CREATE TABLE IF NOT EXISTS cart(product_id INTEGER UNIQUE, quantity INTEGER)',
         );
         db.execute(
-          'CREATE TABLE IF NOT EXISTS users(user_email STRING UNIQUE, password string)',
+          'CREATE TABLE IF NOT EXISTS users(email STRING UNIQUE, password STRING)',
         );
       },
       version: 2,
@@ -87,7 +87,27 @@ class DataBase {
     }
   }
 
-  Future<User?> geUserByEmail(String email) async {
+  Future<bool> hasUser(String email) async{
+    return await getUserByEmail(email) != null;
+  }
+
+  Future<String?> getPasswordByEmail(String email) async{
+    final db = await _getDatabase();
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      Util.tableUsers,
+      where: '${Util.columnEmail} = ?',
+      whereArgs: [email],
+      limit: 1,
+    );
+    if (maps.isNotEmpty) {
+      return User.fromMap(maps[0]).getPassword;
+    } else {
+      return null;
+    }
+  }
+
+  Future<User?> getUserByEmail(String email) async {
     final db = await _getDatabase();
 
     final List<Map<String, dynamic>> maps = await db.query(
