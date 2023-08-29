@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_one/data_base.dart';
+import 'package:flutter_one/session.dart';
 import 'package:flutter_one/user.dart';
+import 'package:flutter_one/util.dart';
+import 'package:flutter_one/user_role.dart';
 import 'package:get/get.dart';
 import 'dart:io';
 
@@ -41,6 +44,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
             password: password
         );
         await DataBase().insertUser(user);
+        user = (await DataBase().getUserByEmail(user.email!))!;
+        int? userRoleId = await DataBase().getIdByUserRole(Util.defaultRole);
+        await DataBase().insertUserRole(user.getId!, userRoleId!);
+        Session.getInstance().login(user, Util.defaultRole);
         Get.snackbar(
           "вы зарегались",
           "Поздравляю блять",
@@ -73,6 +80,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
       } else {
         String? storedPassword = await DataBase().getPasswordByEmail(email);
         if (storedPassword == password) {
+          User? user = await DataBase().getUserByEmail(email);
+          int? roleId = await DataBase().getRoleIdByUserId(user!.getId!);
+          UserRole? role = await DataBase().getUserRoleById(roleId!);
+          Session.getInstance().login(user, role!);
           Get.snackbar(
             "Вы вошли!",
             "Начинайте закупаться энергетиками!",
@@ -254,7 +265,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             ),
                           ),
                           onTap: () {
-
+                            Session.getInstance().logout();
                           },
                         )
                       ),

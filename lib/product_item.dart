@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_one/product.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_one/session.dart';
+import 'package:flutter_one/user_role.dart';
 import 'package:get/get.dart';
 import 'package:flutter_one/json_converter.dart';
 import 'package:flutter_one/cart_controller.dart';
@@ -132,6 +134,16 @@ class _ProductItemState extends State<ProductItem> {
                             SizedBox(height: 5),
                             ElevatedButton(
                               onPressed: () {
+                                if (!Session.getInstance().isAuthenticated()) {
+                                  Get.snackbar(
+                                    "ебать ты лох",
+                                    "зайди",
+                                    snackPosition:
+                                    SnackPosition.TOP,
+                                    duration: const Duration(seconds: 3),
+                                  );
+                                  return;
+                                }
                                 widget.cartController.addProduct(widget.product.id!);
                                 setState(() {
                                   widget.addedToCart = true;

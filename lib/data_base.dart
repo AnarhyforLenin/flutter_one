@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'package:flutter_one/cart_product_entity.dart';
 import 'package:flutter_one/user.dart';
+import 'package:flutter_one/user_role.dart';
 import 'package:flutter_one/util.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -27,13 +28,39 @@ class DataBase {
   static Future<Database> _initDatabase() async {
     final database = openDatabase(
       join(await getDatabasesPath(), 'cart_and_users.db'),
-      onCreate: (db, version) {
-        db.execute(
+      onCreate: (db, version) async {
+        await db.execute(
           'CREATE TABLE IF NOT EXISTS cart(product_id INTEGER UNIQUE, quantity INTEGER)',
         );
-        db.execute(
-          'CREATE TABLE IF NOT EXISTS users(email STRING UNIQUE, password STRING)',
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, email STRING UNIQUE, password TEXT)',
         );
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS roles(id INTEGER PRIMARY KEY AUTOINCREMENT, role STRING)',
+        );
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS user_roles(user_id INTEGER REFERENCES users(id), role_id INTEGER REFERENCES roles(id))',
+        );
+        await db.execute(
+          "INSERT OR IGNORE INTO users(email, password) VALUES('admin', 'admin228');"
+        );
+        await db.execute(
+          "INSERT OR IGNORE INTO roles (role) VALUES ('USER');"
+        );
+        await db.execute(
+          "INSERT OR IGNORE INTO roles (role) VALUES ('ADMIN');"
+        );
+        final adminUserId = Sqflite.firstIntValue(await db.rawQuery(
+          "SELECT id FROM users WHERE email = 'admin';",
+        ));
+        final adminRoleId = Sqflite.firstIntValue(await db.rawQuery(
+          "SELECT id FROM roles WHERE role = 'ADMIN';",
+        ));
+        if (adminUserId != null && adminRoleId != null) {
+          db.execute(
+            "INSERT OR IGNORE INTO user_roles(user_id, role_id) VALUES($adminUserId, $adminRoleId);",
+          );
+        }
       },
       version: 2,
     );
@@ -56,6 +83,66 @@ class DataBase {
       user.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  Future<void> insertUserRole(int userId, int roleId) async {
+    final db = await _getDatabase();
+    await db.insert(
+      Util.tableUserRoles,
+      Util.mapToUserRole(userId, roleId),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<UserRole?> getUserRoleById(int roleId) async {
+    final db = await _getDatabase();
+
+    final List<Map<String, dynamic>> roles = await db.query(
+      Util.tableRoles,
+      where: '${Util.columnId} = ?',
+      whereArgs: [roleId],
+      limit: 1,
+    );
+
+    if (roles.isNotEmpty) {
+      return Util.getUserRoleByString(roles[0][Util.columnRole]);
+    } else {
+      return null;
+    }
+  }
+
+  Future<int?> getIdByUserRole(UserRole userRole) async {
+    final db = await _getDatabase();
+
+    final List<Map<String, dynamic>> roles = await db.query(
+      Util.tableRoles,
+      where: 'LOWER(${Util.columnRole}) = ?',
+      whereArgs: [Util.getStringByUserRole(userRole)],
+      limit: 1,
+    );
+
+    if (roles.isNotEmpty) {
+      return roles[0][Util.columnId];
+    } else {
+      return null;
+    }
+  }
+
+  Future<int?> getRoleIdByUserId(int userId) async {
+    final db = await _getDatabase();
+
+    final List<Map<String, dynamic>> roles = await db.query(
+      Util.tableUserRoles,
+      where: '${Util.columnUserId} = ?',
+      whereArgs: [userId],
+      limit: 1,
+    );
+
+    if (roles.isNotEmpty) {
+      return roles[0][Util.columnRoleId];
+    } else {
+      return null;
+    }
   }
 
   Future<List<CartProductEntity>> products() async {
