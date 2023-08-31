@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_one/product.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_one/registration_page.dart';
 import 'package:flutter_one/session.dart';
 import 'package:flutter_one/user_role.dart';
 import 'package:get/get.dart';
 import 'package:flutter_one/json_converter.dart';
+import 'package:flutter_one/custom_alert_dialog.dart';
 import 'package:flutter_one/cart_controller.dart';
 
 class ProductItem extends StatefulWidget {
@@ -135,12 +137,12 @@ class _ProductItemState extends State<ProductItem> {
                             ElevatedButton(
                               onPressed: () {
                                 if (!Session.getInstance().isAuthenticated()) {
-                                  Get.snackbar(
-                                    "ебать ты лох",
-                                    "зайди",
-                                    snackPosition:
-                                    SnackPosition.TOP,
-                                    duration: const Duration(seconds: 3),
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return  CustomAlertDialog(messageTitle: 'Войдите или зарегистрируйтесь',
+                                          messageContent: 'Выполните вход для совершения покупок', showSecondButton: true);
+                                    },
                                   );
                                   return;
                                 }

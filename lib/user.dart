@@ -7,6 +7,8 @@ class User {
 
   String? get getPassword => password;
 
+  String? get getEmail => email;
+
   int? get getId => id;
 
   Map<String, dynamic> toMap() {

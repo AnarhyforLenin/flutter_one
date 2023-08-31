@@ -3,10 +3,13 @@ import 'package:flutter_one/json_converter.dart';
 import 'package:flutter_one/product_detail.dart';
 import 'package:flutter_one/product_item.dart';
 import 'package:flutter_one/product.dart';
+import 'package:flutter_one/session.dart';
 import 'package:flutter_one/shopping_cart.dart';
 import 'package:flutter_one/cart_controller.dart';
 import 'package:flutter_one/registration_page.dart';
-//import 'package:flutter_one/add_product.dart';
+import 'package:flutter_one/custom_alert_dialog.dart';
+import 'package:flutter_one/user_role.dart';
+import 'package:flutter_one/add_product.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
@@ -136,6 +139,16 @@ class _HomePageState extends State<HomePage> {
                     Padding(padding: EdgeInsets.only(right: 20),
                     child: IconButton(
                       onPressed: () {
+                        if (!Session.getInstance().isAuthenticated()) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return  CustomAlertDialog(messageTitle: 'Войдите или зарегистрируйтесь',
+                                  messageContent: 'Выполните вход для совершения покупок', showSecondButton: true);
+                            },
+                          );
+                          return;
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -218,24 +231,24 @@ class _HomePageState extends State<HomePage> {
               ),
 
             ],),
-
-            // Positioned(
-            //   bottom: 20,
-            //   right: 20,
-            //   child:
-            //   FloatingActionButton(
-            //     onPressed: () {
-            //       // Navigator.push(
-            //       //   context,
-            //       //   MaterialPageRoute(
-            //       //     builder: (context) => AddProduct(),
-            //       //   ),
-            //       // );
-            //     },
-            //     child: Icon(Icons.add),
-            //     backgroundColor: Color(0xFF49212b),
-            //   ),
-            // ),
+            Session.getInstance().getRole() == UserRole.admin ?
+            Positioned(
+              bottom: 70,
+              right: 20,
+              child:
+              FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddProduct(),
+                    ),
+                  );
+                },
+                child: Icon(Icons.add),
+                backgroundColor: Color(0xFF49212b),
+              ),
+            ): Container(),
           ],
         ),
           bottomNavigationBar: bottomNavigationBar(context),
