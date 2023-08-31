@@ -182,11 +182,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   padding: EdgeInsets.symmetric(vertical: 10,horizontal: 5),
                   child: Session.getInstance().isAuthenticated() ?
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 150),
+                      padding: EdgeInsets.symmetric(vertical: 100),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Padding(padding: EdgeInsets.all(2),
+                          Padding(padding: EdgeInsets.all(5),
                             child: Text(
                               'Вы вошли под именем',
                               textAlign: TextAlign.center,
@@ -206,9 +206,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               ),
                             ),
                           ),
+                          Padding(padding: EdgeInsets.symmetric(vertical: 10), child:
                           SizedBox(
-                            width: 200,
-                            height: 50,
+                            width: 100,
+                            height: 30,
                             child: ElevatedButton(
                               onPressed: () {
                                 Session.getInstance().logout();
@@ -234,14 +235,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                 ),
                                 backgroundColor:
                                 Color(0xFF7D9295),
-                                minimumSize: Size(50, 50),
+                                minimumSize: Size(20, 20),
                               ),
                             ),
-                          ),
+                          ),),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 18),
+                            padding: EdgeInsets.symmetric(vertical: 10),
                             child: Container(
-                                height: 35,
+                                height: 40,
                                 child: InkWell(
                                   child: Text(
                                     'Забыли пароль?',
