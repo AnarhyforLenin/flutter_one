@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_one/json_converter.dart';
-import 'package:flutter_one/product_detail.dart';
-import 'package:flutter_one/product_item.dart';
-import 'package:flutter_one/product.dart';
-import 'package:flutter_one/session.dart';
-import 'package:flutter_one/shopping_cart.dart';
-import 'package:flutter_one/cart_controller.dart';
-import 'package:flutter_one/registration_page.dart';
-import 'package:flutter_one/custom_alert_dialog.dart';
-import 'package:flutter_one/user_role.dart';
-import 'package:flutter_one/add_product.dart';
+import 'package:flutter_one/utils/app_colors.dart';
+import 'package:flutter_one/data_layer/json_converter.dart';
+import 'package:flutter_one/presentation_layer/product_detail.dart';
+import 'package:flutter_one/presentation_layer/product_item.dart';
+import 'package:flutter_one/data_layer/session.dart';
+import 'package:flutter_one/presentation_layer/shopping_cart.dart';
+import 'package:flutter_one/presentation_layer/registration_page.dart';
+import 'package:flutter_one/presentation_layer/custom_alert_dialog.dart';
+import 'package:flutter_one/presentation_layer/add_product.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
+
+import '../domain_layer/cart_controller.dart';
+import '../domain_layer/product.dart';
+import '../domain_layer/user_role.dart';
 
 //void main() => runApp(GetMaterialApp(home: HomePage()));
 void main() async {
@@ -20,7 +22,6 @@ void main() async {
 
 
   await Get.putAsync(() => SharedPreferences.getInstance());
-  //await DataBase.initDatabase();
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
@@ -102,7 +103,7 @@ class _HomePageState extends State<HomePage> {
       debugShowCheckedModeBanner: false,
       title: 'Мое сердце остановилось',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF6e7582),
+        scaffoldBackgroundColor: AppColors.background,
       ),
       home: Scaffold(
         extendBody: true,
@@ -161,7 +162,7 @@ class _HomePageState extends State<HomePage> {
                         transform: Matrix4.rotationY(math.pi),
                         child: Icon(Icons.shopping_cart),
                       ),
-                      color: Color(0xff383b42),
+                      color: AppColors.main_font_color,
                     ),),
                     (cartController.products.length > 0) ?
                     Positioned(
@@ -171,12 +172,12 @@ class _HomePageState extends State<HomePage> {
                         padding: EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Color(0xFFf39189),
+                          color: AppColors.light_color,
                         ),
                         child: Obx (() => Text(
                           cartController.products.length.toString(),
                           style: TextStyle(
-                            color: Colors.white,
+                            color: AppColors.main_font_color,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -189,12 +190,12 @@ class _HomePageState extends State<HomePage> {
             ),
             ),
           ],
-          backgroundColor: Color(0xFF6e7582),
+          backgroundColor: AppColors.background,
           centerTitle: true,
           title: Text(
             'Мое сердце остановилось',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.main_font_color,
               fontSize: 15,
               fontWeight: FontWeight.bold,
             ),
@@ -215,13 +216,13 @@ class _HomePageState extends State<HomePage> {
                       },
                       decoration: InputDecoration(
                         hintText: searchString.isNotEmpty ? '' : 'Поиск',
-                        hintStyle: TextStyle(color: Color(0xff383b42)),
+                        hintStyle: TextStyle(color: AppColors.main_font_color),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff383b42)),
+                          borderSide: BorderSide(color: AppColors.main_font_color),
                         ),
-                        suffixIcon: Icon(Icons.search, color: Color(0xff383b42)),
+                        suffixIcon: Icon(Icons.search, color: AppColors.main_font_color),
                       ),
-                      cursorColor: Color(0xff383b42),
+                      cursorColor: AppColors.main_font_color,
                     ),)
 
               ),
@@ -246,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
                 child: Icon(Icons.add),
-                backgroundColor: Color(0xFF49212b),
+                backgroundColor: AppColors.light_color,
               ),
             ): Container(),
           ],
@@ -282,7 +283,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 60,
       decoration: BoxDecoration(
-        color: Colors.white30,
+        color: AppColors.light_color.withOpacity(0.25),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -303,9 +304,18 @@ class _HomePageState extends State<HomePage> {
             },
             icon: const Icon(
               Icons.account_circle,
-              color: Colors.white,
+              color: AppColors.light_color,
               size: 35,
             )
+          ),
+          IconButton(
+              enableFeedback: false,
+              onPressed: () {},
+              icon: const Icon(
+                Icons.store,
+                color: AppColors.light_color,
+                size: 35,
+              )
           ),
         ],
       ),
@@ -374,7 +384,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(color: Color(0xff27282d)),
+          borderSide: BorderSide(color: AppColors.main_font_color),
         ),
       ),
       borderRadius: BorderRadius.circular(25)
@@ -382,16 +392,16 @@ class _DropdownWidgetState extends State<DropdownWidget> {
       value: dropdownValue,
       icon: Icon(
         Icons.keyboard_arrow_down,
-        color: Colors.white,
+        color: AppColors.main_font_color,
       ),
       iconSize: 13,
-      dropdownColor: Color(0xFF6e7582),
+      dropdownColor: AppColors.background,
       items: items.asMap().entries.map((entry) {
         int index = entry.key;
         String item = entry.value;
         return DropdownMenuItem(
           value: item,
-          child: Text(item, style: TextStyle(color: Color(0xff27282d), fontSize: 15),),
+          child: Text(item, style: TextStyle(color: AppColors.main_font_color, fontSize: 15),),
 
         );
       }).toList(),

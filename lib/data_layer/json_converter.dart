@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:flutter_one/product.dart';
 import 'package:flutter/services.dart' as rootBundle;
+
+import '../domain_layer/product.dart';
 
 class JsonConverter {
   Future<List<Product>> ReadJsonData() async {

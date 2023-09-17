@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_one/main.dart';
-import 'package:flutter_one/product.dart';
+import 'package:flutter_one/utils/app_colors.dart';
+import 'package:flutter_one/presentation_layer/main.dart';
+import 'package:flutter_one/data_layer/session.dart';
 import 'package:get/get.dart';
-import 'cart_controller.dart';
+import '../domain_layer/cart_controller.dart';
+import '../domain_layer/product.dart';
+import 'custom_alert_dialog.dart';
 
 class ProductDetail extends StatelessWidget {
   final Product product;
@@ -18,21 +21,25 @@ class ProductDetail extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(product.name!),
-        backgroundColor: Color(0xFF6e7582),
+        title: Text(product.name!, style: TextStyle(color: AppColors.main_font_color),),
+        backgroundColor: AppColors.items_back,
         centerTitle: true,
+        iconTheme: IconThemeData(
+          color: AppColors.main_font_color,
+        ),
       ),
-      body: Center(
+      body: Padding(
+        padding: EdgeInsets.all(10),
         child: GestureDetector(
           child: Container(
-            width: double.infinity,
-            height: 575,
+            width: 380,
+            height: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Color(0xFFf39189),
+              color: AppColors.items_back,
               boxShadow: [
                 BoxShadow(
-                  color: Color(0xFFbb8082),
+                  color: AppColors.shadows,
                   blurRadius: 4,
                   offset: Offset(4, 8),
                 ),
@@ -65,6 +72,16 @@ class ProductDetail extends StatelessWidget {
                 SizedBox(height: 15,),
                 ElevatedButton(
                   onPressed: () {
+                    if (!Session.getInstance().isAuthenticated()) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return  CustomAlertDialog(messageTitle: 'Войдите или зарегистрируйтесь',
+                              messageContent: 'Выполните вход для совершения покупок', showSecondButton: true);
+                        },
+                      );
+                      return;
+                    }
                     cartController.addProduct(product.id!);
                     Get.snackbar(
                       "Товар добавлен",
@@ -83,17 +100,17 @@ class ProductDetail extends StatelessWidget {
                   child: Text(
                     'Купить',
                     style: TextStyle(
-                        color: Colors.black, fontSize: 20),
+                        color: AppColors.main_font_color, fontSize: 20),
                   ),
                   style: ElevatedButton.styleFrom(
-                    shadowColor: Colors.black,
+                    shadowColor: AppColors.main_font_color,
                     elevation: 8,
                     shape: RoundedRectangleBorder(
                       borderRadius:
                       BorderRadius.circular(20),
                     ),
                     backgroundColor:
-                    Color(0xFF7D9295),
+                    AppColors.light_color,
                     fixedSize: Size(170, 50),
                   ),
                 ),

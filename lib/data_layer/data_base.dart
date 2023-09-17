@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:ffi';
-import 'package:flutter_one/cart_product_entity.dart';
-import 'package:flutter_one/user.dart';
-import 'package:flutter_one/user_role.dart';
-import 'package:flutter_one/util.dart';
+import 'package:flutter_one/domain_layer/cart_product_entity.dart';
+import 'package:flutter_one/utils/util.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+import '../domain_layer/user.dart';
+import '../domain_layer/user_role.dart';
 
 class DataBase {
 
@@ -62,9 +63,24 @@ class DataBase {
           );
         }
       },
-      version: 2,
+      version: 3,
+      onUpgrade: _onUpgrade,
     );
     return database;
+  }
+
+  static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 3) {
+      await db.execute(
+        'DROP TABLE user_roles;',
+      );
+      await db.execute(
+        'DROP TABLE roles;',
+      );
+      await db.execute(
+        'ALTER TABLE users ADD COLUMN role STRING;',
+      );
+    }
   }
 
   Future<void> insertProductIntoCart(CartProductEntity cartProductEntity) async {
@@ -189,6 +205,22 @@ class DataBase {
     );
     if (maps.isNotEmpty) {
       return User.fromMap(maps[0]).getPassword;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> getRoleByEmail(String email) async{
+    final db = await _getDatabase();
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      Util.tableUsers,
+      where: '${Util.columnEmail} = ?',
+      whereArgs: [email],
+      limit: 1,
+    );
+    if (maps.isNotEmpty) {
+      return User.fromMap(maps[0]).getRole;
     } else {
       return null;
     }

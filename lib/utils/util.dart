@@ -1,5 +1,4 @@
-import 'package:flutter_one/user.dart';
-import 'package:flutter_one/user_role.dart';
+import '../domain_layer/user_role.dart';
 
 class Util {
   static const String columnProductId = 'product_id';

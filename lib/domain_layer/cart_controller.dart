@@ -1,11 +1,8 @@
-import 'package:flutter_one/session.dart';
-import 'package:flutter_one/user_role.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_one/domain_layer/product.dart';
 import 'package:get/get.dart';
-import 'package:flutter_one/product.dart';
-import 'package:flutter_one/cart_product_entity.dart';
-import 'package:flutter_one/data_base.dart';
-import 'package:flutter_one/json_converter.dart';
+import 'package:flutter_one/domain_layer/cart_product_entity.dart';
+import 'package:flutter_one/data_layer/data_base.dart';
+import 'package:flutter_one/data_layer/json_converter.dart';
 
 class CartController extends GetxController {
   RxMap<int, int> _products = <int, int>{}.obs;

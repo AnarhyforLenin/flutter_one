@@ -1,5 +1,5 @@
-import 'package:flutter_one/user_role.dart';
-import 'package:flutter_one/user.dart';
+import '../domain_layer/user.dart';
+import '../domain_layer/user_role.dart';
 
 class Session {
   User? _user;

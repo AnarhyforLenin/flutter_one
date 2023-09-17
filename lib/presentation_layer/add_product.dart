@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_one/product.dart';
+import 'package:flutter_one/utils/app_colors.dart';
+import 'package:flutter_one/presentation_layer/main.dart';
+import 'package:flutter_one/presentation_layer/registration_page.dart';
 import 'package:get/get.dart';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
+
+import '../domain_layer/product.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -54,12 +58,12 @@ class AddProduct extends StatefulWidget {
   Widget build(BuildContext context) {
   return MaterialApp(
     theme: ThemeData(
-      scaffoldBackgroundColor: Color(0xFF6e7582),
+      scaffoldBackgroundColor: AppColors.background,
     ),
     home: Scaffold (
       appBar: AppBar(
         title: Text('Добавление товара'),
-          backgroundColor: Color(0xFF6e7582),
+          backgroundColor: AppColors.main_font_color,
           centerTitle: true,
         ),
         body: Padding (
@@ -70,10 +74,10 @@ class AddProduct extends StatefulWidget {
               height: 400,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Color(0xFFf39189),
+                color: AppColors.items_back,
                   boxShadow: [
                   BoxShadow(
-                    color: Color(0xFFbb8082),
+                    color: AppColors.shadows,
                     blurRadius: 4,
                     offset: Offset(4, 8),
                   ),
@@ -94,7 +98,7 @@ class AddProduct extends StatefulWidget {
                       },
                       child: Icon(Icons.add_a_photo,
                         size: 40,),
-                      backgroundColor: Color(0xFF49212b),
+                      backgroundColor: AppColors.light_color,
                       ),
                     ):
                     GestureDetector(
@@ -119,12 +123,12 @@ class AddProduct extends StatefulWidget {
                       },
                       decoration: InputDecoration(
                         hintText: 'Название продукта',
-                        hintStyle: TextStyle(color: Color(0xff444850)),
+                        hintStyle: TextStyle(color: AppColors.main_font_color),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff444850)),
+                          borderSide: BorderSide(color: AppColors.main_font_color),
                         ),
                       ),
-                      cursorColor: Color(0xff444850),
+                      cursorColor: AppColors.main_font_color,
                     ),
                     SizedBox(
                       height: 5,
@@ -137,12 +141,12 @@ class AddProduct extends StatefulWidget {
                       },
                       decoration: InputDecoration(
                           hintText: 'Цена',
-                          hintStyle: TextStyle(color: Color(0xff444850)),
+                          hintStyle: TextStyle(color: AppColors.main_font_color),
                           focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff444850)),
+                          borderSide: BorderSide(color: AppColors.main_font_color),
                         ),
                       ),
-                      cursorColor: Color(0xff444850),
+                      cursorColor: AppColors.light_color,
                     ),
                     SizedBox(
                       height: 5,
@@ -155,12 +159,12 @@ class AddProduct extends StatefulWidget {
                       },
                       decoration: InputDecoration(
                         hintText: 'Описание',
-                        hintStyle: TextStyle(color: Color(0xff444850)),
+                        hintStyle: TextStyle(color: AppColors.main_font_color),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff444850)),
+                          borderSide: BorderSide(color: AppColors.main_font_color),
                         ),
                       ),
-                      cursorColor: Color(0xff444850),
+                      cursorColor: AppColors.light_color,
                     ),
                     SizedBox(height: 20,),
                     ElevatedButton(
@@ -170,18 +174,18 @@ class AddProduct extends StatefulWidget {
                       child: Text(
                         'Добавить',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: AppColors.main_font_color,
                           fontSize: 18),
                       ),
                       style: ElevatedButton.styleFrom(
-                        shadowColor: Colors.black,
+                        shadowColor: AppColors.main_font_color,
                         elevation: 8,
                         shape: RoundedRectangleBorder(
                           borderRadius:
                           BorderRadius.circular(20),
                         ),
                         backgroundColor:
-                        Color(0xFF7D9295),
+                        AppColors.light_color,
                         minimumSize: Size(50, 50),
                       ),
                     ),
@@ -191,7 +195,57 @@ class AddProduct extends StatefulWidget {
           ),
           ),
       ),
+      bottomNavigationBar: bottomNavigationBar(context),
     ),
   );
+  }
+  Container bottomNavigationBar(BuildContext context) {
+    return Container(
+      height: 60,
+      decoration: BoxDecoration(
+        color: AppColors.light_color.withOpacity(0.25),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+              enableFeedback: false,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RegistrationPage(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.account_circle,
+                color: AppColors.light_color,
+                size: 35,
+              )
+          ),
+          IconButton(
+              enableFeedback: false,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.store,
+                color: AppColors.light_color,
+                size: 35,
+              )
+          ),
+        ],
+      ),
+    );
   }
 }

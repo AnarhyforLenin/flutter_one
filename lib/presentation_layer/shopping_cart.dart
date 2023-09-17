@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_one/product.dart';
-import 'package:flutter_one/product_item.dart';
-import 'package:flutter_one/cart_controller.dart';
+import 'package:flutter_one/utils/app_colors.dart';
+import 'package:flutter_one/presentation_layer/product_item.dart';
 import 'package:get/get.dart';
+import '../domain_layer/cart_controller.dart';
+import '../domain_layer/product.dart';
 
 
 class ShoppingCart extends StatefulWidget {
@@ -21,11 +22,14 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF6e7582),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Корзина'),
-        backgroundColor: Color(0xFF6e7582),
+        title: Text('Корзина', style: TextStyle(color: AppColors.main_font_color),),
+        backgroundColor: AppColors.background,
         centerTitle: true,
+        iconTheme: IconThemeData(
+          color: AppColors.main_font_color,
+        ),
       ),
       body: Column(
         children: [
@@ -37,10 +41,10 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
                 height: 650,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color(0xFFE68573),
+                  color: AppColors.items_back,
                   boxShadow: [
                     BoxShadow(
-                      color: Color(0xFFbb8082),
+                      color: AppColors.shadows,
                       blurRadius: 4,
                       offset: Offset(4, 8),
                     ),
@@ -99,37 +103,43 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
               children: [
                 Text('Итого',
                   style: TextStyle(
-                    fontSize: 18, color: Colors.black,
+                    fontSize: 18, color: AppColors.main_font_color,
                   ), ),
                 Obx(() => Text('${cartController.total}€',
                   style: TextStyle(
-                    fontSize: 18, color: Colors.black,),)
+                    fontSize: 18, color: AppColors.main_font_color,),)
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Get.snackbar(
-                    "Покупка совершена!",
-                    "Вы купили энергетиков на ${cartController.total}€",
-                    snackPosition:
-                    SnackPosition.BOTTOM,
-                    duration: Duration(seconds: 2),
-                  );
+                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Покупка завершена', style: TextStyle(color: AppColors.main_font_color),),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        duration: const Duration(seconds: 2),
+                        backgroundColor: AppColors.light_color,
+                        behavior: SnackBarBehavior.floating,
+                        margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.83,
+                        ),
+                      ),
+                    );
                     cartController.removeAll();
                   },
                   child: Text(
                     'Купить',
                     style: TextStyle(
-                        color: Colors.black, fontSize: 15),
+                        color: AppColors.main_font_color, fontSize: 15),
                   ),
                   style: ElevatedButton.styleFrom(
-                    shadowColor: Colors.black,
+                    shadowColor: AppColors.main_font_color,
                     elevation: 8,
                     shape: RoundedRectangleBorder(
                       borderRadius:
                       BorderRadius.circular(20),
                     ),
                     backgroundColor:
-                    Color(0xFF7D9295),
+                    AppColors.light_color,
                     fixedSize: Size(125, 30),
                   ),
                 ),

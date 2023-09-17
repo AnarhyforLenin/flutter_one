@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_one/product.dart';
+import 'package:flutter_one/utils/app_colors.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_one/registration_page.dart';
-import 'package:flutter_one/session.dart';
-import 'package:flutter_one/user_role.dart';
+import 'package:flutter_one/data_layer/session.dart';
 import 'package:get/get.dart';
-import 'package:flutter_one/json_converter.dart';
-import 'package:flutter_one/custom_alert_dialog.dart';
-import 'package:flutter_one/cart_controller.dart';
+import 'package:flutter_one/presentation_layer/custom_alert_dialog.dart';
+
+import '../domain_layer/cart_controller.dart';
+import '../domain_layer/product.dart';
 
 class ProductItem extends StatefulWidget {
   final Product product;
@@ -47,10 +46,10 @@ class _ProductItemState extends State<ProductItem> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Color(0xFFf39189),
+            color: AppColors.items_back,
             boxShadow: [
               BoxShadow(
-                color: Color(0xFFbb8082),
+                color: AppColors.shadows,
                 blurRadius: 4,
                 offset: Offset(4, 8),
               ),
@@ -65,7 +64,7 @@ class _ProductItemState extends State<ProductItem> {
                   margin: EdgeInsets.symmetric(horizontal: 13),
                   child: Text(
                     widget.product.name!,
-                    style: TextStyle(fontSize: 15, color: Colors.black),
+                    style: TextStyle(fontSize: 15, color: AppColors.main_font_color),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -151,18 +150,24 @@ class _ProductItemState extends State<ProductItem> {
                                   widget.addedToCart = true;
                                   showBuyButton = false;
                                 });
-                                Get.snackbar(
-                                  "Товар добавлен",
-                                  "Вы добавили ${widget.product.name} в корзину",
-                                  snackPosition:
-                                  SnackPosition.BOTTOM,
-                                  duration: Duration(seconds: 1),
+                                ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Товар добавлен', style: TextStyle(color: AppColors.main_font_color),),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                                    duration: const Duration(seconds: 2),
+                                    backgroundColor: AppColors.light_color,
+                                    behavior: SnackBarBehavior.floating,
+                                    margin: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context).size.height * 0.83,
+                                    ),
+                                ),
                                 );
                               },
                               child: Text(
                                 'Купить',
                                 style: TextStyle(
-                                    color: Colors.black),
+                                    color: AppColors.main_font_color),
                               ),
                               style: ElevatedButton.styleFrom(
                                 shadowColor: Colors.black,
@@ -172,7 +177,7 @@ class _ProductItemState extends State<ProductItem> {
                                   BorderRadius.circular(20),
                                 ),
                                 backgroundColor:
-                                Color(0xFF7D9295),
+                                AppColors.light_color,
                               ),
                             ),
                           ],

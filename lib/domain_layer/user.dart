@@ -2,10 +2,13 @@ class User {
   int? id;
   String? email;
   String? password;
+  String? role;
 
-  User({this.id, this.email, this.password});
+  User({this.id, this.email, this.password, this.role});
 
   String? get getPassword => password;
+
+  String? get getRole => role;
 
   String? get getEmail => email;
 
@@ -16,6 +19,7 @@ class User {
       'id': id,
       'email': email,
       'password': password,
+      'role': role,
     };
   }
 
@@ -24,6 +28,7 @@ class User {
       id: map['id'],
       email: map['email'],
       password: map['password'].toString(),
+      role: map['role'].toString(),
     );
   }
 }
