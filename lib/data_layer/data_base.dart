@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'package:flutter_one/domain_layer/cart_product_entity.dart';
-import 'package:flutter_one/utils/util.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../domain_layer/cart_product_entity.dart';
 import '../domain_layer/user.dart';
 import '../domain_layer/user_role.dart';
+import '../utils/util.dart';
 
 class DataBase {
 
@@ -43,13 +42,13 @@ class DataBase {
           'CREATE TABLE IF NOT EXISTS user_roles(user_id INTEGER REFERENCES users(id), role_id INTEGER REFERENCES roles(id))',
         );
         await db.execute(
-          "INSERT OR IGNORE INTO users(email, password) VALUES('admin', 'admin228');"
+            "INSERT OR IGNORE INTO users(email, password) VALUES('admin', 'admin228');"
         );
         await db.execute(
-          "INSERT OR IGNORE INTO roles (role) VALUES ('USER');"
+            "INSERT OR IGNORE INTO roles (role) VALUES ('USER');"
         );
         await db.execute(
-          "INSERT OR IGNORE INTO roles (role) VALUES ('ADMIN');"
+            "INSERT OR IGNORE INTO roles (role) VALUES ('ADMIN');"
         );
         final adminUserId = Sqflite.firstIntValue(await db.rawQuery(
           "SELECT id FROM users WHERE email = 'admin';",
@@ -63,24 +62,9 @@ class DataBase {
           );
         }
       },
-      version: 3,
-      onUpgrade: _onUpgrade,
+      version: 2,
     );
     return database;
-  }
-
-  static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 3) {
-      await db.execute(
-        'DROP TABLE user_roles;',
-      );
-      await db.execute(
-        'DROP TABLE roles;',
-      );
-      await db.execute(
-        'ALTER TABLE users ADD COLUMN role STRING;',
-      );
-    }
   }
 
   Future<void> insertProductIntoCart(CartProductEntity cartProductEntity) async {
@@ -205,22 +189,6 @@ class DataBase {
     );
     if (maps.isNotEmpty) {
       return User.fromMap(maps[0]).getPassword;
-    } else {
-      return null;
-    }
-  }
-
-  Future<String?> getRoleByEmail(String email) async{
-    final db = await _getDatabase();
-
-    final List<Map<String, dynamic>> maps = await db.query(
-      Util.tableUsers,
-      where: '${Util.columnEmail} = ?',
-      whereArgs: [email],
-      limit: 1,
-    );
-    if (maps.isNotEmpty) {
-      return User.fromMap(maps[0]).getRole;
     } else {
       return null;
     }

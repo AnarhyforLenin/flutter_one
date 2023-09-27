@@ -16,18 +16,6 @@ import '../domain_layer/cart_controller.dart';
 import '../domain_layer/product.dart';
 import '../domain_layer/user_role.dart';
 
-//void main() => runApp(GetMaterialApp(home: HomePage()));
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-
-  await Get.putAsync(() => SharedPreferences.getInstance());
-
-  runApp(GetMaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: HomePage(),
-  ));
-}
 
 class HomePage extends StatefulWidget {
   @override
@@ -58,7 +46,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    startPage();
     _loadAndSortProducts();
+  }
+
+  void startPage() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Get.putAsync(() => SharedPreferences.getInstance());
   }
 
   Future<void> _loadAndSortProducts() async {
@@ -99,15 +93,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Мое сердце остановилось',
-      theme: ThemeData(
-        scaffoldBackgroundColor: AppColors.background,
-      ),
-      home: Scaffold(
+    return Scaffold(
         extendBody: true,
+        backgroundColor: AppColors.background,
         appBar: AppBar(
+          title: Text(
+            'Мое сердце остановилось',
+            style: TextStyle(
+              color: AppColors.main_font_color,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           leading: Padding(
             padding: const EdgeInsets.only(left: 8),
             child: SizedBox(
@@ -192,14 +189,7 @@ class _HomePageState extends State<HomePage> {
           ],
           backgroundColor: AppColors.background,
           centerTitle: true,
-          title: Text(
-            'Мое сердце остановилось',
-            style: TextStyle(
-              color: AppColors.main_font_color,
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+
         ),
         body: Stack (
           children: [
@@ -228,7 +218,6 @@ class _HomePageState extends State<HomePage> {
               ),
               Expanded(
                 child: _productsListView(searchString.isEmpty ? jsonProducts : jsonProducts.where((product) => product.name.toString().toLowerCase().contains(searchString)).toList(),),
-
               ),
 
             ],),
@@ -251,8 +240,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ): Container(),
           ],
-        ),
-          bottomNavigationBar: bottomNavigationBar(context),
         ),
     );
   }
@@ -279,48 +266,6 @@ class _HomePageState extends State<HomePage> {
       );
     },
   );
-  Container bottomNavigationBar(BuildContext context) {
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        color: AppColors.light_color.withOpacity(0.25),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          IconButton(
-            enableFeedback: false,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RegistrationPage(),
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.account_circle,
-              color: AppColors.light_color,
-              size: 35,
-            )
-          ),
-          IconButton(
-              enableFeedback: false,
-              onPressed: () {},
-              icon: const Icon(
-                Icons.store,
-                color: AppColors.light_color,
-                size: 35,
-              )
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class DropdownWidget extends StatefulWidget {

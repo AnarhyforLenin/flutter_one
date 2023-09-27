@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_one/utils/app_colors.dart';
-import 'package:flutter_one/presentation_layer/main.dart';
+import 'package:flutter_one/presentation_layer/home_page.dart';
 import 'package:flutter_one/presentation_layer/registration_page.dart';
 import 'package:get/get.dart';
 import 'dart:io';
