@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import '../domain_layer/cart_controller.dart';
 import '../domain_layer/product.dart';
 import 'custom_alert_dialog.dart';
+import 'nav.dart';
 
 class ProductDetail extends StatelessWidget {
   final Product product;
@@ -28,7 +29,18 @@ class ProductDetail extends StatelessWidget {
           color: AppColors.main_font_color,
         ),
       ),
-      body: Padding(
+      backgroundColor: AppColors.background,
+      body: WillPopScope(
+    onWillPop: () {
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (context) => Nav(),
+    ),
+    );
+    return Future.value(false);
+    },
+    child: Padding(
         padding: EdgeInsets.all(10),
         child: GestureDetector(
           child: Container(
@@ -118,6 +130,7 @@ class ProductDetail extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }

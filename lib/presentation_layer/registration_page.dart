@@ -58,7 +58,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   void forgetPassword() async {
     if (Session.getInstance().isAuthenticated()) {
-      String? userPassword = await DataBase().getPasswordByEmail(email);
+      String userEmail = Session.getInstance().getUser()!.getEmail!;
+      String? userPassword = await DataBase().getPasswordByEmail(userEmail);
+      print(userPassword);
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -186,7 +188,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => HomePage(),
+                                  builder: (context) => Nav(),
                                 ),
                               );
                             },

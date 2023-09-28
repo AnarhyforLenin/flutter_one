@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_one/presentation_layer/home_page.dart';
 import 'package:flutter_one/presentation_layer/registration_page.dart';
-
+import 'package:badges/badges.dart';
 import '../utils/app_colors.dart';
 
 class Nav extends StatefulWidget {
@@ -30,22 +30,23 @@ class _NavState extends State<Nav> {
       ),
         resizeToAvoidBottomInset: false,
         bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.store),
+                label: 'Registration',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            onTap: _onItemTap,
+            selectedFontSize: 15,
+            selectedItemColor: AppColors.light_color,
+            unselectedItemColor: AppColors.main_font_color,
+            backgroundColor: AppColors.background,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.store),
-            label: 'Registration',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTap,
-        selectedItemColor: AppColors.background,
-        unselectedItemColor: AppColors.white,
-        backgroundColor: AppColors.light_color,
-      ),
     );
   }
 }

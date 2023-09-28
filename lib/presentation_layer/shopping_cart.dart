@@ -4,6 +4,7 @@ import 'package:flutter_one/presentation_layer/product_item.dart';
 import 'package:get/get.dart';
 import '../domain_layer/cart_controller.dart';
 import '../domain_layer/product.dart';
+import 'nav.dart';
 
 
 class ShoppingCart extends StatefulWidget {
@@ -31,7 +32,17 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
           color: AppColors.main_font_color,
         ),
       ),
-      body: Column(
+      body:  WillPopScope(
+      onWillPop: () {
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) => Nav(),
+        ),
+        );
+        return Future.value(false);
+      },
+      child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -149,7 +160,7 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
 
         ],
       ),
-
+      ),
       );
   }
 }
