@@ -280,6 +280,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               password = value;
                             });
                           },
+                          obscureText: true,
                           decoration: InputDecoration(
                             hintText: 'Пароль',
                             enabledBorder: OutlineInputBorder(
