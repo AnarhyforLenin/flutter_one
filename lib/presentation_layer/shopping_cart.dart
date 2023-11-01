@@ -33,6 +33,7 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
       ),
       body: Column(
         children: [
+          Expanded(child:
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
@@ -95,6 +96,7 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
                 }),
               ),
             ),
+          ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal:  20, vertical:  5),
