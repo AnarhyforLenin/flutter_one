@@ -65,7 +65,6 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
                 child:
                 Obx(() {
                   final products = cartController.products;
-                  print(products);
                   if (products.isEmpty) {
                     return Center(
                       child: Text(
@@ -78,9 +77,7 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
                     itemCount: products.length,
                     itemBuilder: (context, index) {
                       int productId = products.keys.elementAt(index);
-                      print(productId);
                       Product? product = cartController.getProductById(productId);
-                      print(product);
                       if (product != null) {
                         return Dismissible(
                           key: Key(productId.toString()),

@@ -130,8 +130,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
         title: Text('Регистрация'),
         backgroundColor: AppColors.background,
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
-        body: GestureDetector (
+        body:  WillPopScope(
+          onWillPop: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Nav(),
+              ),
+            );
+            return Future.value(false);
+          },
+        child: GestureDetector (
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: Padding (
             padding: EdgeInsets.all(5),
@@ -393,7 +404,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             ),
           ),
         ),
-
+      )
       );
   }
   void showCustomSnackBar(BuildContext context, String message) {

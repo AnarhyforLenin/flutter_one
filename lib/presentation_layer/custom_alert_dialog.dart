@@ -36,13 +36,13 @@ class CustomAlertDialog extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Text('Войти или зарегистрироваться', style: TextStyle(color: AppColors.main_font_color, fontSize: 13,)),
+                    child: Text('Войти или зарегистрироваться', style: TextStyle(color: AppColors.main_font_color, fontSize: 11,)),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Закрыть', style: TextStyle(color: AppColors.main_font_color, fontSize: 13),),
+                    child: Text('Закрыть', style: TextStyle(color: AppColors.main_font_color, fontSize: 11),),
                   )
                 ],
               ) :

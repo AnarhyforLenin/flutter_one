@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_one/data_layer/session.dart';
 import 'package:get/get.dart';
 import 'package:flutter_one/presentation_layer/custom_alert_dialog.dart';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import '../domain_layer/cart_controller.dart';
 import '../domain_layer/product.dart';
 
@@ -62,13 +62,15 @@ class _ProductItemState extends State<ProductItem> {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   margin: EdgeInsets.symmetric(horizontal: 13),
-                  child: Text(
-                    widget.product.name!,
-                    style: TextStyle(fontSize: 15, color: AppColors.main_font_color),
-                    textAlign: TextAlign.center,
+                  child: AutoSizeText(
+                      widget.product.name!,
+                      style: TextStyle(fontSize: 15, color: AppColors.main_font_color),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                  ),
                   ),
                 ),
-              ),
               Container(
                 alignment: Alignment.center,
                 width: 150,
@@ -85,7 +87,7 @@ class _ProductItemState extends State<ProductItem> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(right: 10),
+                        margin: EdgeInsets.only(right: 5),
                         child: Text(
                           'Цена: $price €',
                           style: TextStyle(fontSize: 15),
@@ -98,30 +100,58 @@ class _ProductItemState extends State<ProductItem> {
                         height: 40,
                         child: Row(
                           children: [
+                            Expanded(child:
                             IconButton(
                               onPressed: () {
+                                if (!Session.getInstance().isAuthenticated()) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return  CustomAlertDialog(messageTitle: 'Войдите или зарегистрируйтесь',
+                                          messageContent: 'Выполните вход для совершения покупок', showSecondButton: true);
+                                    },
+                                  );
+                                  return;
+                                }
                                 setState(() {
-                                    widget.cartController.removeProduct(widget.product.id!);
-                                    if (widget.cartController.products[widget.product.id] == 0 || widget.cartController.products[widget.product.id] == null) {
-                                      widget.addedToCart = false;
-                                      showBuyButton = true;
-                                    }
+                                  widget.cartController.removeProduct(widget.product.id!);
+                                  if (widget.cartController.products[widget.product.id] == 0 || widget.cartController.products[widget.product.id] == null) {
+                                    widget.addedToCart = false;
+                                    showBuyButton = true;
+                                  }
                                 });
                               },
                               icon: Icon(Icons.remove_circle),
                               iconSize: 24,
                             ),
-                            Obx(() => Text('${widget.cartController.products[widget.product.id] ?? 0}',
-                              style: TextStyle(fontSize: 15),
-                            ),),
+                            ),
+                            Obx(() => FittedBox (
+                              fit: BoxFit.contain,
+                              child: Text(
+                                '${widget.cartController.products[widget.product.id] ?? 0}',
+                                style: TextStyle(fontSize: 15),
+                              ),),
+                            ),
+                            Expanded(child:
                             IconButton(
                               onPressed: () {
+                                if (!Session.getInstance().isAuthenticated()) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return  CustomAlertDialog(messageTitle: 'Войдите или зарегистрируйтесь',
+                                          messageContent: 'Выполните вход для совершения покупок', showSecondButton: true);
+                                    },
+                                  );
+                                  return;
+                                }
                                 setState(() {
                                   widget.cartController.addProduct(widget.product.id!);
                                 });
                               },
                               icon: Icon(Icons.add_circle),
                               iconSize: 24,
+                            ),
                             ),
                           ],
                         ),

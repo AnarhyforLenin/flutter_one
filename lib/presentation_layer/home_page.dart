@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_one/utils/app_colors.dart';
 import 'package:flutter_one/data_layer/json_converter.dart';
@@ -93,13 +94,20 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+      return false;
+    },
+    child:  Scaffold(
         resizeToAvoidBottomInset: false,
         extendBody: true,
         backgroundColor: AppColors.background,
         appBar: AppBar(
-          title: Text(
+          title: AutoSizeText(
             'Мое сердце остановилось',
+            maxLines: 1,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: AppColors.main_font_color,
               fontSize: 15,
@@ -242,6 +250,7 @@ class _HomePageState extends State<HomePage> {
             ): Container(),
           ],
         ),
+    )
     );
   }
 
@@ -336,19 +345,24 @@ class _DropdownWidgetState extends State<DropdownWidget> {
       borderRadius: BorderRadius.circular(25)
           .copyWith(topLeft: Radius.circular(0)),
       value: dropdownValue,
-      icon: Icon(
-        Icons.keyboard_arrow_down,
-        color: AppColors.main_font_color,
+      icon: FittedBox (
+        fit: BoxFit.contain,
+        child: Icon(
+          Icons.keyboard_arrow_down,
+          color: AppColors.main_font_color,
+        ),
       ),
-      iconSize: 13,
+      iconSize: 10,
       dropdownColor: AppColors.background,
       items: items.asMap().entries.map((entry) {
         int index = entry.key;
         String item = entry.value;
         return DropdownMenuItem(
           value: item,
-          child: Text(item, style: TextStyle(color: AppColors.main_font_color, fontSize: 15),),
-
+          child: FittedBox (
+            fit: BoxFit.contain,
+            child: Text(item, style: TextStyle(color: AppColors.main_font_color, fontSize: 13),),
+          ),
         );
       }).toList(),
       onChanged: (String? newValue) {

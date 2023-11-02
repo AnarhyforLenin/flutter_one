@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 import '../domain_layer/product.dart';
+import 'nav.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -44,13 +45,7 @@ class AddProduct extends StatefulWidget {
       );
       Get.back(result: newProduct);
     } else {
-      Get.snackbar(
-        "Введите данные",
-        "Проверьте ввод названия, цены и опсания",
-        snackPosition:
-        SnackPosition.BOTTOM,
-        duration: Duration(seconds: 2),
-      );
+      showCustomSnackBar(context, 'Введите данные');
     }
   }
 
@@ -63,10 +58,20 @@ class AddProduct extends StatefulWidget {
     home: Scaffold (
       appBar: AppBar(
         title: Text('Добавление товара'),
-          backgroundColor: AppColors.main_font_color,
+          backgroundColor: AppColors.background,
           centerTitle: true,
         ),
-        body: Padding (
+        body:  WillPopScope(
+          onWillPop: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Nav(),
+              ),
+            );
+            return Future.value(false);
+          },
+          child: Padding (
           padding: EdgeInsets.all(5),
           child: Center(
             child: Container(
@@ -195,57 +200,18 @@ class AddProduct extends StatefulWidget {
           ),
           ),
       ),
-      bottomNavigationBar: bottomNavigationBar(context),
+    )
     ),
   );
   }
-  Container bottomNavigationBar(BuildContext context) {
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        color: AppColors.light_color.withOpacity(0.25),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          IconButton(
-              enableFeedback: false,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RegistrationPage(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.account_circle,
-                color: AppColors.light_color,
-                size: 35,
-              )
+  void showCustomSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    WidgetsBinding.instance.addPostFrameCallback((_) =>
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message, style: TextStyle(color: AppColors.white)),
+            duration: const Duration(seconds: 3),
           ),
-          IconButton(
-              enableFeedback: false,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.store,
-                color: AppColors.light_color,
-                size: 35,
-              )
-          ),
-        ],
-      ),
-    );
+        ));
   }
 }
