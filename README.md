@@ -1,16 +1,9 @@
 # flutter_one
 
-A new Flutter project.
+This Flutter application is a mockup of an online store.
 
-## Getting Started
+The application implements a database of users, their roles and goods. All files are stored locally. The database is written using SQL queries.
 
-This project is a starting point for a Flutter application.
+The application implements registration and login under different roles. Adding goods to cart, displaying additional information about them is implemented.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+In development is the addition of goods through a user with the role of admin.
