@@ -64,7 +64,8 @@ class _ShoppingCartState extends State<ShoppingCart> with TickerProviderStateMix
                 ),
                 child:
                 Obx(() {
-                  final products = cartController.products;
+                  final products = cartController.cartProducts;
+                  print(cartController.cartProducts.length);
                   if (products.isEmpty) {
                     return Center(
                       child: Text(

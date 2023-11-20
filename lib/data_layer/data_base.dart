@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_one/domain_layer/product.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -49,6 +50,23 @@ class DataBase {
         );
         await db.execute(
             "INSERT OR IGNORE INTO roles (role) VALUES ('ADMIN');"
+        );
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS products(id INTEGER PRIMARY KEY AUTOINCREMENT, name STRING, imageUrl STRING, price INTEGER, description STRING)',
+        );
+        await db.execute(
+            "INSERT OR IGNORE INTO products(name, imageUrl, price, description) VALUES"
+                "('RedBull BeachBreeze', 'assets/images/beachbreeze.png', '20', 'Энергетик со вкусом бриза на пляже. В России не продается.'),"
+                "('RedBull Acai', 'assets/images/acai.png', '10', 'Энергетик с Асаи. В России не продается.'),"
+                "('RedBull Cactus', 'assets/images/cactus.png', '999', 'Энергетик со вкусом кактуса. В России не продается.'),"
+                "('RedBull Classic', 'assets/images/classic.png', '40', 'Энергетик RedBull классический. Есть в России и по всему миру.'),"
+                "('RedBull Coconut', 'assets/images/coconut.png', '50', 'Энергетик со вкусом кокоса и ягод. Есть по всему миру. Просто прекрасен.'),"
+                "('RedBull Grapefruit', 'assets/images/grapefruit.png', '60', 'Энергетик со вкусом грейпфрута. В России не продается.'),"
+                "('RedBull Kiwi&Apple', 'assets/images/kiwiapple.png', '70', 'Энергетик со вкусом киви и яблока. В России не продается.'),"
+                "('RedBull No Sugar', 'assets/images/nosugar.png', '80', 'Энергетик RedBull без сахара. Есть в России и по всему миру.'),"
+                "('RedBull Kratingdaeng', 'assets/images/small.png', '90', 'Энергетик странный и маленький. В России не продается.'),"
+                "('RedBull Tangerine', 'assets/images/tangerine.png', '150', 'Энергетик с тангарином. В России не продается.'),"
+                "('RedBull Watermelon', 'assets/images/watermelon.png', '110', 'Энергетик со вкусом арбуза. Есть в России и по всему миру.');"
         );
         final adminUserId = Sqflite.firstIntValue(await db.rawQuery(
           "SELECT id FROM users WHERE email = 'admin';",
@@ -128,6 +146,16 @@ class DataBase {
     }
   }
 
+  Future<int?> reload() async {
+    final db = await _getDatabase();
+
+    final List<Map<String, dynamic>> roles = await db.query(
+      'cart',
+      where: 'id = ?',
+      limit: 1,
+    );
+  }
+
   Future<int?> getRoleIdByUserId(int userId) async {
     final db = await _getDatabase();
 
@@ -152,6 +180,16 @@ class DataBase {
 
     return List.generate(maps.length, (i) => CartProductEntity.fromMap(maps[i]));
   }
+
+  //новая бд
+  Future<List<Product>> getProductList() async {
+    final db = await _getDatabase();
+
+    final List<Map<String, dynamic>> maps = await db.query('products');
+
+    return List.generate(maps.length, (i) => Product.fromMap(maps[i]));
+  }
+  //
 
   Future<bool> hasProducts(int productId) async{
     return await getProductById(productId) == null;

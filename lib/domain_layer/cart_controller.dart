@@ -2,24 +2,31 @@ import 'package:flutter_one/domain_layer/product.dart';
 import 'package:get/get.dart';
 import 'package:flutter_one/domain_layer/cart_product_entity.dart';
 import 'package:flutter_one/data_layer/data_base.dart';
-import 'package:flutter_one/data_layer/json_converter.dart';
-
 class CartController extends GetxController {
-  RxMap<int, int> _products = <int, int>{}.obs;
-  RxMap<int, int> get products => _products;
+  RxMap<int, int> _cartProducts = <int, int>{}.obs;
+  RxMap<int, int> get cartProducts => _cartProducts;
 
-  List<Product> jsonProducts = [];
-  final JsonConverter jsonConverter = JsonConverter();
+  List<Product> _products = [];
+  List<Product> get products => _products;
+
+  set products(List<Product> value) {
+    _products = value;
+  }
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    await loadProducts();
   }
 
   Future<void> loadData() async {
     List<CartProductEntity> dataCart = await DataBase().products();
-    _products = convertToCart(dataCart);
+    _cartProducts = convertToCart(dataCart);
+  }
+
+  Future<List<Product>> loadProducts() async {
+    List<Product> dataProducts = await DataBase().getProductList();
+
+    return dataProducts;
   }
 
   RxMap<int, int> convertToCart(List<CartProductEntity> cartProducts) {
@@ -31,25 +38,20 @@ class CartController extends GetxController {
 
     return rxMap;
   }
-  
-  Future<void> loadProducts() async {
-    jsonProducts = await jsonConverter.ReadJsonData();
-  }
+
 
   Product? getProductById(int id) {
-    return jsonProducts.firstWhere((product) => product.id == id);
+    return products.firstWhere((product) => product.id == id);
   }
 
   Product? getProductByCartEntity(CartProductEntity cartProductEntity) {
-    return jsonProducts.firstWhere((product) => product.id == cartProductEntity.productId);
+    return products.firstWhere((product) => product.id == cartProductEntity.productId);
   }
 
   void addProduct(int productId) async {
-    _products.update(productId, (quantity) => quantity + 1, ifAbsent: () => 1);
-
+    _cartProducts.update(productId, (quantity) => quantity + 1, ifAbsent: () => 1);
     CartProductEntity cartProductEntity = CartProductEntity(productId: productId,
-        quantity: _products[productId]);
-
+        quantity: _cartProducts[productId]);
     if (await DataBase().hasProducts(productId)) {
       DataBase().insertProductIntoCart(cartProductEntity);
     } else {
@@ -58,35 +60,35 @@ class CartController extends GetxController {
   }
 
   void removeProduct(int productId) {
-    if (_products.containsKey(productId) && _products[productId]! < 2) {
-      _products.remove(productId);
+    if (_cartProducts.containsKey(productId) && _cartProducts[productId]! < 2) {
+      _cartProducts.remove(productId);
       DataBase().deleteProduct(productId);
-    } else if (_products.containsKey(productId)) {
-      _products[productId] = _products[productId]! - 1;
+    } else if (_cartProducts.containsKey(productId)) {
+      _cartProducts[productId] = _cartProducts[productId]! - 1;
       DataBase().updateProduct(CartProductEntity(productId: productId,
-          quantity: _products[productId]));
+          quantity: _cartProducts[productId]));
     }
   }
 
   void removeAll() {
-    for (var key in _products.keys.toList()) {
+    for (var key in _cartProducts.keys.toList()) {
       DataBase().deleteProduct(key);
-      _products.remove(key);
+      _cartProducts.remove(key);
     }
   }
 
   void updateList() {
-    _products.refresh();
+    _cartProducts.refresh();
   }
 
   void deleteProduct(int productId) {
-      _products.removeWhere((key, value) => key == productId);
+      _cartProducts.removeWhere((key, value) => key == productId);
       DataBase().deleteProduct(productId);
   }
 
-  double get total => _products.isEmpty
+  double get total => _cartProducts.isEmpty
       ? 0
-      : _products.entries
+      : _cartProducts.entries
       .fold(0, (total, entry) {
     int productId = entry.key;
     int quantity = entry.value;

@@ -32,14 +32,14 @@ class AddProduct extends StatefulWidget {
   });
   }
 
-  void addProductToList() {
+  void addProductToList(String product_name, String product_price, String product_description, File image) {
     if (product_name.isNotEmpty &&
     product_price.isNotEmpty &&
     product_description.isNotEmpty &&
-    _image != null) {
+    image != null) {
       Product newProduct = Product(
         name: product_name,
-        imageUrl: _image!.path,
+        imageUrl: image!.path,
         price: int.parse(product_price),
         description: product_description,
       );
@@ -174,7 +174,7 @@ class AddProduct extends StatefulWidget {
                     SizedBox(height: 20,),
                     ElevatedButton(
                       onPressed: () {
-                        addProductToList();
+                        addProductToList(product_name, product_price, product_description, _image!);
                       },
                       child: Text(
                         'Добавить',

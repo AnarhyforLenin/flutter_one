@@ -1,12 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_one/utils/app_colors.dart';
-import 'package:flutter_one/data_layer/json_converter.dart';
 import 'package:flutter_one/presentation_layer/product_detail.dart';
 import 'package:flutter_one/presentation_layer/product_item.dart';
 import 'package:flutter_one/data_layer/session.dart';
 import 'package:flutter_one/presentation_layer/shopping_cart.dart';
-import 'package:flutter_one/presentation_layer/registration_page.dart';
 import 'package:flutter_one/presentation_layer/custom_alert_dialog.dart';
 import 'package:flutter_one/presentation_layer/add_product.dart';
 import 'package:get/get.dart';
@@ -28,11 +26,8 @@ class _HomePageState extends State<HomePage> {
   static bool nameSort = false;
   String searchString = "";
 
-  List<Product> jsonProducts = [];
-  final JsonConverter jsonConverter = JsonConverter();
-
-  Future<void> _loadProducts() async {
-    jsonProducts = await jsonConverter.ReadJsonData();
+  Future<void> _loadProducts() async{
+    cartController.products = await cartController.loadProducts();
   }
 
   final CartController cartController = Get.put(CartController());
@@ -41,6 +36,7 @@ class _HomePageState extends State<HomePage> {
     final prefs = await SharedPreferences.getInstance();
     final int state = prefs.getInt('firstValue') ?? 0;
     await cartController.loadData();
+    await _loadProducts();
     return state;
   }
 
@@ -75,9 +71,9 @@ class _HomePageState extends State<HomePage> {
   void _sortByName(bool descendingNameUp) {
     setState(() {
       if (descendingNameUp) {
-        jsonProducts.sort((a, b) => b.name!.compareTo(a.name!));
+        cartController.products.sort((a, b) => b.name!.compareTo(a.name!));
       } else {
-        jsonProducts.sort((a, b) => a.name!.compareTo(b.name!));
+        cartController.products.sort((a, b) => a.name!.compareTo(b.name!));
       }
     });
   }
@@ -85,9 +81,9 @@ class _HomePageState extends State<HomePage> {
   void _sortByPrice(bool descendingPriceUp) {
     setState(() {
       if (descendingPriceUp) {
-        jsonProducts.sort((a, b) => b.price!.compareTo(a.price!));
+        cartController.products.sort((a, b) => b.price!.compareTo(a.price!));
       } else {
-        jsonProducts.sort((a, b) => a.price!.compareTo(b.price!));
+        cartController.products.sort((a, b) => a.price!.compareTo(b.price!));
       }
     });
   }
@@ -170,7 +166,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       color: AppColors.main_font_color,
                     ),),
-                    (cartController.products.length > 0) ?
+                    (cartController.cartProducts.length > 0) ?
                     Positioned(
                       right: 20,
                       bottom: 4,
@@ -181,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                           color: AppColors.light_color,
                         ),
                         child: Obx (() => Text(
-                          cartController.products.length.toString(),
+                          cartController.cartProducts.length.toString(),
                           style: TextStyle(
                             color: AppColors.main_font_color,
                             fontSize: 12,
@@ -226,7 +222,7 @@ class _HomePageState extends State<HomePage> {
 
               ),
               Expanded(
-                child: _productsListView(searchString.isEmpty ? jsonProducts : jsonProducts.where((product) => product.name.toString().toLowerCase().contains(searchString)).toList(),),
+                child: _productsListView(searchString.isEmpty ? cartController.products : cartController.products.where((product) => product.name.toString().toLowerCase().contains(searchString)).toList(),),
               ),
 
             ],),

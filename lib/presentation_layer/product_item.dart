@@ -94,7 +94,7 @@ class _ProductItemState extends State<ProductItem> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      !(widget.cartController.products[widget.product.id] == null || widget.cartController.products[widget.product.id] == 0)
+                      !(widget.cartController.cartProducts[widget.product.id] == null || widget.cartController.cartProducts[widget.product.id] == 0)
                           ? Container(
                         width: 200,
                         height: 40,
@@ -115,7 +115,7 @@ class _ProductItemState extends State<ProductItem> {
                                 }
                                 setState(() {
                                   widget.cartController.removeProduct(widget.product.id!);
-                                  if (widget.cartController.products[widget.product.id] == 0 || widget.cartController.products[widget.product.id] == null) {
+                                  if (widget.cartController.cartProducts[widget.product.id] == 0 || widget.cartController.cartProducts[widget.product.id] == null) {
                                     widget.addedToCart = false;
                                     showBuyButton = true;
                                   }
@@ -128,7 +128,7 @@ class _ProductItemState extends State<ProductItem> {
                             Obx(() => FittedBox (
                               fit: BoxFit.contain,
                               child: Text(
-                                '${widget.cartController.products[widget.product.id] ?? 0}',
+                                '${widget.cartController.cartProducts[widget.product.id] ?? 0}',
                                 style: TextStyle(fontSize: 15),
                               ),),
                             ),
