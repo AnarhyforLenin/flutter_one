@@ -228,7 +228,7 @@ class _HomePageState extends State<HomePage> {
             ],),
             Session.getInstance().getRole() == UserRole.admin ?
             Positioned(
-              bottom: 70,
+              bottom: 50,
               right: 20,
               child:
               FloatingActionButton(

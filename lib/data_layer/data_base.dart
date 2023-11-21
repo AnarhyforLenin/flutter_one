@@ -85,7 +85,8 @@ class DataBase {
     return database;
   }
 
-  Future<void> insertProductIntoCart(CartProductEntity cartProductEntity) async {
+  Future<void> insertProductIntoCart(
+      CartProductEntity cartProductEntity) async {
     final db = await _getDatabase();
     await db.insert(
       Util.tableCart,
@@ -178,7 +179,8 @@ class DataBase {
 
     final List<Map<String, dynamic>> maps = await db.query('cart');
 
-    return List.generate(maps.length, (i) => CartProductEntity.fromMap(maps[i]));
+    return List.generate(
+        maps.length, (i) => CartProductEntity.fromMap(maps[i]));
   }
 
   //новая бд
@@ -189,9 +191,10 @@ class DataBase {
 
     return List.generate(maps.length, (i) => Product.fromMap(maps[i]));
   }
+
   //
 
-  Future<bool> hasProducts(int productId) async{
+  Future<bool> hasProducts(int productId) async {
     return await getProductById(productId) == null;
   }
 
@@ -212,11 +215,11 @@ class DataBase {
     }
   }
 
-  Future<bool> hasUser(String email) async{
+  Future<bool> hasUser(String email) async {
     return await getUserByEmail(email) != null;
   }
 
-  Future<String?> getPasswordByEmail(String email) async{
+  Future<String?> getPasswordByEmail(String email) async {
     final db = await _getDatabase();
 
     final List<Map<String, dynamic>> maps = await db.query(
@@ -226,7 +229,9 @@ class DataBase {
       limit: 1,
     );
     if (maps.isNotEmpty) {
-      return User.fromMap(maps[0]).getPassword;
+      return User
+          .fromMap(maps[0])
+          .getPassword;
     } else {
       return null;
     }
@@ -278,5 +283,17 @@ class DataBase {
       where: '${Util.columnProductId} = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<void> addNewProductToDataBase(String product_name, String imageUrl,
+      int price, String description) async {
+    final Database db = await _initDatabase();
+
+    await db.transaction((txn) async {
+      await txn.rawInsert(
+        'INSERT OR IGNORE INTO products(name, imageUrl, price, description) VALUES(?, ?, ?, ?)',
+        [product_name, imageUrl, price, description],
+      );
+    });
   }
 }

@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_one/data_layer/data_base.dart';
 import 'package:flutter_one/utils/app_colors.dart';
-import 'package:flutter_one/presentation_layer/home_page.dart';
-import 'package:flutter_one/presentation_layer/registration_page.dart';
 import 'package:get/get.dart';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
-import '../domain_layer/product.dart';
+import '../domain_layer/cart_controller.dart';
 import 'nav.dart';
 
 class AddProduct extends StatefulWidget {
@@ -25,6 +24,8 @@ class AddProduct extends StatefulWidget {
 
   final imagePicker = ImagePicker();
 
+  final CartController cartController = Get.put(CartController());
+
   Future getImage() async {
   final image = await imagePicker.pickImage(source: ImageSource.gallery);
   setState(() {
@@ -32,18 +33,18 @@ class AddProduct extends StatefulWidget {
   });
   }
 
-  void addProductToList(String product_name, String product_price, String product_description, File image) {
+  void addProductToList(String product_name, int product_price, String product_description, File image) {
     if (product_name.isNotEmpty &&
-    product_price.isNotEmpty &&
+    product_price > 0 &&
     product_description.isNotEmpty &&
     image != null) {
-      Product newProduct = Product(
-        name: product_name,
-        imageUrl: image!.path,
-        price: int.parse(product_price),
-        description: product_description,
+      DataBase().addNewProductToDataBase(product_name, image!.path, product_price, product_description);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Nav(),
+        ),
       );
-      Get.back(result: newProduct);
     } else {
       showCustomSnackBar(context, 'Введите данные');
     }
@@ -56,6 +57,7 @@ class AddProduct extends StatefulWidget {
       scaffoldBackgroundColor: AppColors.background,
     ),
     home: Scaffold (
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Добавление товара'),
           backgroundColor: AppColors.background,
@@ -111,7 +113,7 @@ class AddProduct extends StatefulWidget {
                         getImage();
                       }, // Image tapped
                       child: Container(
-                        alignment: Alignment.center,
+                      alignment: Alignment.center,
                         width: 150,
                         height: 150,
                         child: Image.file(_image!, fit: BoxFit.fill,),
@@ -174,7 +176,7 @@ class AddProduct extends StatefulWidget {
                     SizedBox(height: 20,),
                     ElevatedButton(
                       onPressed: () {
-                        addProductToList(product_name, product_price, product_description, _image!);
+                        addProductToList(product_name, int.parse(product_price), product_description, _image!);
                       },
                       child: Text(
                         'Добавить',

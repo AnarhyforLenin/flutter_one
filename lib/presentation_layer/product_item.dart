@@ -1,10 +1,15 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_one/utils/app_colors.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_one/data_layer/session.dart';
 import 'package:get/get.dart';
 import 'package:flutter_one/presentation_layer/custom_alert_dialog.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:image_picker/image_picker.dart';
 import '../domain_layer/cart_controller.dart';
 import '../domain_layer/product.dart';
 
@@ -75,9 +80,8 @@ class _ProductItemState extends State<ProductItem> {
                 alignment: Alignment.center,
                 width: 150,
                 height: 150,
-                child: Image.asset(
-                  widget.product.imageUrl!,
-                  fit: BoxFit.contain,
+                child: CustomImageWidget(
+                  product: widget.product,
                 ),
               ),
               Expanded(
@@ -225,4 +229,55 @@ class _ProductItemState extends State<ProductItem> {
     );
   }
 }
+class CustomImageWidget extends StatefulWidget {
+  final Product product;
+
+  CustomImageWidget({required this.product});
+
+  @override
+  _CustomImageWidgetState createState() => _CustomImageWidgetState();
+}
+
+class _CustomImageWidgetState extends State<CustomImageWidget> {
+  File? _image;
+  final imagePicker = ImagePicker();
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildImage();
+  }
+
+  Widget _buildImage() {
+      if (widget.product.imageUrl!.startsWith('assets/')) {
+        return Image.asset(
+          widget.product.imageUrl!,
+          fit: BoxFit.contain,
+        );
+      } else {
+        return _buildImageFromFile(widget.product.imageUrl);
+      }
+  }
+
+  Widget _buildImageFromFile(String? imagePath) {
+    if (imagePath != null && imagePath.isNotEmpty) {
+      return Image.file(
+        File(imagePath),
+        fit: BoxFit.fill,
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Future<void> getImage() async {
+    final image = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _image = File(image.path);
+      });
+    }
+  }
+}
+
+
 
