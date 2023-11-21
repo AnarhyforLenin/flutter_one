@@ -11,6 +11,7 @@ class Util {
   static const String tableUsers = 'users';
   static const String tableUserRoles = 'user_roles';
   static const String tableRoles = 'roles';
+  static const String tableProducts = 'products';
   static const UserRole defaultRole = UserRole.user;
 
   static UserRole getUserRoleByString(String roleString) {

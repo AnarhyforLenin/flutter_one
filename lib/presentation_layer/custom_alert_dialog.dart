@@ -22,7 +22,7 @@ class CustomAlertDialog extends StatelessWidget {
       actions: <Widget>[
         Center(
           child: ButtonBar(
-            alignment: MainAxisAlignment.center, // Расположение кнопок по центру
+            alignment: MainAxisAlignment.center,
             children: <Widget>[
               showSecondButton ?
               Row(

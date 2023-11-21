@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_one/data_layer/data_base.dart';
 import 'package:flutter_one/utils/app_colors.dart';
 import 'package:get/get.dart';
@@ -17,9 +18,9 @@ class AddProduct extends StatefulWidget {
 
   class _AddProductState extends State<AddProduct> {
 
-  late String product_name;
-  late String product_price;
-  late String product_description;
+  String product_name = '';
+  int product_price = 0;
+  String product_description = '';
   File? _image;
 
   final imagePicker = ImagePicker();
@@ -34,30 +35,24 @@ class AddProduct extends StatefulWidget {
   }
 
   void addProductToList(String product_name, int product_price, String product_description, File image) {
-    if (product_name.isNotEmpty &&
-    product_price > 0 &&
-    product_description.isNotEmpty &&
-    image != null) {
-      DataBase().addNewProductToDataBase(product_name, image!.path, product_price, product_description);
+      DataBase().addNewProductToDataBase(product_name, image.path, product_price, product_description);
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => Nav(),
         ),
       );
-    } else {
-      showCustomSnackBar(context, 'Введите данные');
-    }
   }
 
   @override
   Widget build(BuildContext context) {
   return MaterialApp(
+    debugShowCheckedModeBanner: false,
     theme: ThemeData(
       scaffoldBackgroundColor: AppColors.background,
     ),
     home: Scaffold (
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Добавление товара'),
           backgroundColor: AppColors.background,
@@ -125,9 +120,10 @@ class AddProduct extends StatefulWidget {
                     TextField(
                       onChanged: (value) {
                         setState(() {
-                          product_name = value.toLowerCase();
+                          product_name = value;
                         });
                       },
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         hintText: 'Название продукта',
                         hintStyle: TextStyle(color: AppColors.main_font_color),
@@ -141,9 +137,14 @@ class AddProduct extends StatefulWidget {
                       height: 5,
                     ),
                     TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      textInputAction: TextInputAction.next,
                       onChanged: (value) {
                         setState(() {
-                          product_price = value.toLowerCase();
+                          product_price = int.parse(value);;
                         });
                       },
                       decoration: InputDecoration(
@@ -161,9 +162,10 @@ class AddProduct extends StatefulWidget {
                     TextField(
                       onChanged: (value) {
                         setState(() {
-                          product_description = value.toLowerCase();
+                          product_description = value;
                         });
                       },
+                      autofocus: true,
                       decoration: InputDecoration(
                         hintText: 'Описание',
                         hintStyle: TextStyle(color: AppColors.main_font_color),
@@ -173,10 +175,18 @@ class AddProduct extends StatefulWidget {
                       ),
                       cursorColor: AppColors.light_color,
                     ),
-                    SizedBox(height: 20,),
+                    SizedBox(height: 10,),
                     ElevatedButton(
                       onPressed: () {
-                        addProductToList(product_name, int.parse(product_price), product_description, _image!);
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                        if (product_name.isNotEmpty &&
+                            product_price > 0 &&
+                            product_description.isNotEmpty && _image != null) {
+                          addProductToList(product_name, product_price, product_description, _image!);
+                        }
                       },
                       child: Text(
                         'Добавить',

@@ -86,6 +86,11 @@ class CartController extends GetxController {
       DataBase().deleteProduct(productId);
   }
 
+  void deleteProductFromListOfProducts(int productId) {
+    _products.remove(productId);
+    DataBase().deleteProductFromListOfProducts(productId);
+  }
+
   double get total => _cartProducts.isEmpty
       ? 0
       : _cartProducts.entries

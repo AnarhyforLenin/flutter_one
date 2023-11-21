@@ -88,6 +88,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void deleteProduct(Product product) {
+    cartController.deleteProductFromListOfProducts(product.id!);
+    if (cartController.getProductById(product.id!) != null) {
+      cartController.deleteProduct(product.id!);
+      cartController.updateList();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -194,7 +202,6 @@ class _HomePageState extends State<HomePage> {
           ],
           backgroundColor: AppColors.background,
           centerTitle: true,
-
         ),
         body: Stack (
           children: [
@@ -254,7 +261,63 @@ class _HomePageState extends State<HomePage> {
     itemCount: products.length,
     itemBuilder: (context, index) {
       final product = products[index];
-
+      if (Session.getInstance().getRole() == UserRole.admin && !(product.imageUrl!.startsWith('assets/'))) {
+        return Dismissible(
+          confirmDismiss: (DismissDirection direction) async {
+            return await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Вы хотите удалить добавленный вами товар?', textAlign: TextAlign.center,),
+                  content: Text('Это действие нельзя отменить, товар удалится из базы данных', textAlign: TextAlign.center,),
+                  backgroundColor: AppColors.items_back,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25))
+                  ),
+                  actions: <Widget>[
+                    Center(
+                      child: ButtonBar(
+                        alignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                child: Text('Да', style: TextStyle(color: AppColors.main_font_color, fontSize: 11,)),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(false);
+                                },
+                                child: Text('Нет', style: TextStyle(color: AppColors.main_font_color, fontSize: 11),),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          key: Key(product.id.toString()),
+          onDismissed: (direction) async {
+            deleteProduct(product);
+          },
+          background: Container(color: Colors.red),
+          child: ProductItem(
+            product: product,
+            onTap: () {},
+            index: index,
+            cartController: cartController,
+            quantity: 1,
+            addedToCart: true,
+          ),
+        );
+      }
       return ProductItem(
         product: product,
         onTap: () {
@@ -378,4 +441,5 @@ class _DropdownWidgetState extends State<DropdownWidget> {
     );
   }
 }
+
 

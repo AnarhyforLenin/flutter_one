@@ -6,6 +6,7 @@ import 'package:flutter_one/presentation_layer/home_page.dart';
 import 'package:flutter_one/data_layer/session.dart';
 import 'package:get/get.dart';
 import '../domain_layer/cart_controller.dart';
+import '../domain_layer/custom_image_widget.dart';
 import '../domain_layer/product.dart';
 import 'custom_alert_dialog.dart';
 import 'nav.dart';
@@ -64,9 +65,8 @@ class ProductDetail extends StatelessWidget {
                 Container(
                   height: 300,
                   width: 300,
-                  child: Image.asset(
-                    product.imageUrl!,
-                    fit: BoxFit.fill,
+                  child: CustomImageWidget(
+                    product: product,
                   ),
                 ),
                 Container(height: 30),

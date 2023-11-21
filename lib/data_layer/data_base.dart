@@ -296,4 +296,16 @@ class DataBase {
       );
     });
   }
+
+  Future<void> deleteProductFromListOfProducts(int id) async {
+    final Database db = await _initDatabase();
+
+    await db.transaction((txn) async {
+      await txn.rawDelete(
+        'DELETE FROM products WHERE id = ?',
+        [id],
+      );
+    });
+  }
 }
+
