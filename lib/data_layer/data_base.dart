@@ -95,11 +95,12 @@ class DataBase {
     );
   }
 
-  Future<void> insertUser(User user) async {
+  Future<void> insertUser(String email, String password) async {
+    Map<String, dynamic> userMap = {'email' : email, 'password': password};
     final db = await _getDatabase();
     await db.insert(
       Util.tableUsers,
-      user.toMap(),
+      userMap,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }

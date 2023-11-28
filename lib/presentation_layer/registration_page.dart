@@ -49,7 +49,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         email: email,
         password: password
     );
-    await DataBase().insertUser(user);
+    await DataBase().insertUser(email, password);
     user = (await DataBase().getUserByEmail(user.email!))!;
     int? userRoleId = await DataBase().getIdByUserRole(Util.defaultRole);
     await DataBase().insertUserRole(user.getId!, userRoleId!);

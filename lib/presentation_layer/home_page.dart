@@ -87,7 +87,6 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
-
   void deleteProduct(Product product) {
     cartController.deleteProductFromListOfProducts(product.id!);
     if (cartController.getProductById(product.id!) != null) {
